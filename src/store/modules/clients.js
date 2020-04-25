@@ -19,7 +19,7 @@ const getters = {
 
 const actions = {
   [CLIENTS_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
-    HTTP.get('/api/clients')
+    HTTP.get('/clients')
       .then((resp) => {
         commit(CLIENTS_SUCCESS, resp);
         resolve(resp);

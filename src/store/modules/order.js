@@ -25,7 +25,7 @@ const getters = {
 
 const actions = {
   [ORDERLIST_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
-    HTTP.get('/api/orderlist')
+    HTTP.get('/orderlist')
       .then((resp) => {
         commit(ORDERLIST_SUCCESS, resp);
         resolve(resp);
@@ -35,7 +35,7 @@ const actions = {
       });
   }),
   [ORDER_REQUEST]: ({ commit }, orderpk) => new Promise((resolve, reject) => {
-    HTTP.get(`/api/getorder/${orderpk}`)
+    HTTP.get(`/getorder/${orderpk}`)
       .then((resp) => {
         const payload = { };
         payload.resp = resp;

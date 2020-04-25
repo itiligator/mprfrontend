@@ -44,9 +44,14 @@ const routes = [
     component: () => import(/* webpackChunkName: "showorder" */ '../views/ShowOrder.vue'),
   },
   {
-    path: '/Visit',
+    path: '/visit',
     name: 'Visit',
     component: () => import(/* webpackChunkName: "visit" */ '../views/VisitTZform.vue'),
+  },
+  {
+    path: '/payment',
+    name: 'Payment',
+    component: () => import(/* webpackChunkName: "visit" */ '../views/PaymentTZform.vue'),
   },
   {
     path: '/logout',

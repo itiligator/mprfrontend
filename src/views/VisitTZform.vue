@@ -1,32 +1,32 @@
 <template>
   <div>
 <b-container>
+<!--class="fixed-top"-->
+  <b-row >
 
-  <b-row class="fixed-top">
-
-    <b-col>
-      <div class="btn-group border" role="group">
-      <b-button class="btn border" size="lg" to="/">
+    <b-col class="">
+      <div class="btn-group border d-flex" role="group">
+      <b-button class="btn btn-default border w-100" size="lg" to="/">
         VISIT_OUT
       </b-button>
 
-      <b-button class="btn border" size="lg">
+      <b-button class="btn btn-default border w-100" size="lg">
         VISIT_STATUS
       </b-button>
       </div>
     </b-col>
 
     <b-col>
-      <div class="btn-group border" role="group">
-      <b-button class="btn border" size="lg">
+      <div class="btn-group border d-flex" role="group">
+      <b-button class="btn btn-default border w-100" size="lg">
         VISIT_ID
       </b-button>
 
-      <b-button class="btn border" size="lg">
+      <b-button class="btn btn-default border w-100" size="lg">
         PAY_PLAN
       </b-button>
 
-      <b-button class="btn border " size="lg">
+      <b-button class="btn btn-default border w-100" size="lg">
         delivery_date
       </b-button>
       </div>
@@ -35,13 +35,7 @@
   </b-row>
 
 
-    <b-row >
-      <br>      заглушечка
-      <br>      заглушечка
-      </b-row>
-
-
-      <b-row  class="mt-5 mb-5" >
+      <b-row  class="mb-5" >
         <b-col >
           <table width="100%" class="border">
             <tr>
@@ -196,7 +190,7 @@
       </b-button>
       <br>
 
-      <b-button class=  "btn border" size="lg">
+      <b-button class=  "btn border" size="lg" to="/payment">
         Оплата
       </b-button>
       <br>
