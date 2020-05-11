@@ -60,7 +60,7 @@ const mutations = {
   // eslint-disable-next-line no-shadow
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = 'success';
-    state.token = resp.token;
+    state.token = resp.data.token;
     state.hasLoadedOnce = true;
   },
   // eslint-disable-next-line no-shadow

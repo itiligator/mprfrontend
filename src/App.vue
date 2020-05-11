@@ -1,18 +1,22 @@
 <template>
-<!--  <div id="app">-->
-
+  <div id="app">
+    <sidebar></sidebar>
     <router-view></router-view>
-
-<!--  </div>-->
+  </div>
 </template>
 
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+// import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap-vue/dist/bootstrap-vue.css';
+
+import Sidebar from '@/components/Sidebar.vue';
 
 export default {
   name: 'App',
+  components: {
+    Sidebar,
+  },
   metaInfo: {
     title: 'МПР | Рогозец',
     htmlAttrs: {

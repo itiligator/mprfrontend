@@ -15,13 +15,13 @@
 
 <script>
 
-import { CLIENTS_REQUEST } from '@/store/actions/clients';
+import { CLIENTS_REQUEST, GETALLCLIENTS } from '@/store/actions/clients';
 
 export default {
   name: 'ClientsTable',
   computed: {
     clients() {
-      return this.$store.getters.CLIENTS;
+      return this.$store.getters[GETALLCLIENTS];
     },
   },
   mounted() {

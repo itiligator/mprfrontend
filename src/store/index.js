@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import order from '@/store/modules/order';
+// import order from '@/store/modules/order';
 import clients from '@/store/modules/clients';
-import goods from '@/store/modules/goods';
+// import goods from '@/store/modules/goods';
+import createPersistedState from 'vuex-persistedstate';
 import user from './modules/user';
+import UI from './modules/UI';
+import visits from './modules/visits';
 import auth from './modules/auth';
 
 Vue.use(Vuex);
@@ -14,9 +17,12 @@ export default new Vuex.Store({
   modules: {
     user,
     auth,
-    goods,
+    UI,
+    visits,
+    // goods,
     clients,
-    order,
+    // order,
   },
   strict: debug,
+  plugins: [createPersistedState()],
 });

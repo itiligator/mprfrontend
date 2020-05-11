@@ -3,7 +3,9 @@ import VueRouter from 'vue-router';
 import store from '@/store';
 // eslint-disable-next-line no-unused-vars
 import Logout from '@/components/Logout.vue';
+import Login from '@/views/Login.vue';
 // import ShowOrder from '@/views/ShowOrder.vue';
+// import { HIDE_SIDEBAR } from '@/store/actions/UI';
 import Home from '../views/Home.vue';
 
 
@@ -16,47 +18,40 @@ const routes = [
     component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/route',
+    name: 'Route',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
-  },
-  {
-    path: '/info',
-    name: 'Info',
-    component: () => import(/* webpackChunkName: "info" */ '../views/Info.vue'),
-  },
-  {
-    path: '/order',
-    name: 'Order',
-    component: () => import(/* webpackChunkName: "order" */ '../views/Order.vue'),
-  },
-  {
-    path: '/order/:pk',
-    name: 'ShowOrder',
-    component: () => import(/* webpackChunkName: "showorder" */ '../views/ShowOrder.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/Route.vue'),
   },
   {
     path: '/visit',
     name: 'Visit',
-    component: () => import(/* webpackChunkName: "visit" */ '../views/VisitTZform.vue'),
+    component: () => import(/* webpackChunkName: "login" */ '../views/Visit.vue'),
   },
   {
-    path: '/payment',
-    name: 'Payment',
-    component: () => import(/* webpackChunkName: "visit" */ '../views/PaymentTZform.vue'),
+    path: '/task',
+    name: 'Task',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Task.vue'),
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
   },
   {
     path: '/logout',
     name: 'Logout',
     component: Logout,
+  },
+  {
+    path: '/datatest',
+    name: 'Datatest',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/datatest.vue'),
   },
 ];
 
@@ -69,6 +64,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && !store.getters.isAuthenticated) next({ name: 'Login' });
   else next();
+  // store.commit(HIDE_SIDEBAR);
 });
 
 

@@ -5,7 +5,7 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="6" vs-lg="6">
-      <h4>Визит</h4>
+      <h4>Задачи</h4>
     </vs-col>
   </vs-row>
 
@@ -16,7 +16,7 @@
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 
 export default {
-  name: 'Visit',
+  name: 'Task',
   methods:
     {
       toggleSidebar() {
@@ -26,5 +26,6 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
+<style scoped>
+
 </style>

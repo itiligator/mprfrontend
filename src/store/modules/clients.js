@@ -1,6 +1,8 @@
 import {
   CLIENTS_REQUEST,
   CLIENTS_SUCCESS,
+  GETCLIENTBYINN,
+  GETALLCLIENTS,
 } from '@/store/actions/clients';
 import { HTTP } from '@/utils/http';
 
@@ -12,9 +14,14 @@ const state = {
 
 const getters = {
   // eslint-disable-next-line no-shadow,arrow-body-style
-  CLIENTS: (state) => state.clientsstate,
+  [GETALLCLIENTS]: (state) => state.clientsstate,
+  [GETCLIENTBYINN]:
   // eslint-disable-next-line no-shadow
-  GETCLIENTBYPK: (state) => (pk) => state.clientsstate.find((client) => client.pk === pk),
+    (state) => (inn) => {
+      const searchResult = state.clientsstate.find((c) => c.inn === inn);
+      if (typeof searchResult !== 'undefined') { return searchResult; }
+      return { name: inn, inn };
+    },
 };
 
 const actions = {
@@ -33,7 +40,6 @@ const actions = {
 const mutations = {
   // eslint-disable-next-line no-shadow
   [CLIENTS_SUCCESS]: (state, resp) => {
-    // for (let i = 0; i < 10; i += 1) { state.clientsstate[resp.data[i].pk] = resp.data[i]; }
     state.clientsstate = resp.data;
     state.clientssloaded = true;
     state.clientsdate = Date();

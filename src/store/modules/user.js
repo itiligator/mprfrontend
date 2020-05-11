@@ -1,4 +1,5 @@
-import apiCall from '@/utils/api';
+// import apiCall from '@/utils/api';
+import { HTTP } from '@/utils/http';
 import Vue from 'vue';
 import { USER_REQUEST, USER_ERROR, USER_SUCCESS } from '../actions/user';
 import { AUTH_LOGOUT } from '../actions/auth';
@@ -9,29 +10,37 @@ const getters = {
   // eslint-disable-next-line no-shadow
   getProfile: (state) => state.profile,
   // eslint-disable-next-line no-shadow
-  isProfileLoaded: (state) => !!state.profile.name,
+  isProfileLoaded: (state) => !!state.profile.firstName,
+  // eslint-disable-next-line no-shadow
+  userFirstName: (state) => state.profile.firstName,
+  // eslint-disable-next-line no-shadow
+  userLastName: (state) => state.profile.lastName,
+  // eslint-disable-next-line no-shadow
+  userFullName: (state) => `${state.profile.firstName} ${state.profile.lastName}`,
 };
 
 const actions = {
-  [USER_REQUEST]: ({ commit, dispatch }) => {
-    commit(USER_REQUEST);
-    apiCall({ url: 'user/me' })
+  [USER_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
+    HTTP.get('users')
       .then((resp) => {
-        commit(USER_SUCCESS, resp);
+        commit(USER_SUCCESS, resp.data);
+        resolve(resp);
       })
-      .catch(() => {
+      .catch((err) => {
         commit(USER_ERROR);
-        // if resp is unauthorized, logout, to
-        dispatch(AUTH_LOGOUT);
+        // хуй знает почему, но получение профилья пользователя сначала скатывается в ошибку
+        // а потом завершается успешно
+        // dispatch(AUTH_LOGOUT);
+        reject(err);
       });
-  },
+  }),
 };
 
 const mutations = {
-  // eslint-disable-next-line no-shadow
-  [USER_REQUEST]: (state) => {
-    state.status = 'loading';
-  },
+  // // eslint-disable-next-line no-shadow
+  // [USER_REQUEST]: (state) => {
+  //   state.status = 'loading';
+  // },
   // eslint-disable-next-line no-shadow
   [USER_SUCCESS]: (state, resp) => {
     state.status = 'success';

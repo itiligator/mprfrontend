@@ -51,7 +51,7 @@ export default {
   name: 'login',
   data() {
     return {
-      username: 'admin',
+      username: 'aei',
       password: '123',
     };
   },

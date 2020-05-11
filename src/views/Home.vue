@@ -1,369 +1,51 @@
-<template>
-    <b-container>
-      <b-row class="fixed-top bg-white">
-        <b-col>
-      <b-dropdown id="dropdown-1" text="Инфо" size="lg">
-        <b-dropdown-item>Клиенты</b-dropdown-item>
-        <b-dropdown-item>Продукция</b-dropdown-item>
-        <b-dropdown-item>Промо</b-dropdown-item>
-        <b-dropdown-item>Визиты</b-dropdown-item>
-<!--        <b-dropdown-divider></b-dropdown-divider>-->
-<!--        <b-dropdown-item active>Active action</b-dropdown-item>-->
-<!--        <b-dropdown-item disabled>Disabled action</b-dropdown-item>-->
-      </b-dropdown>
-          <b-button size="lg">
-            TASK
-          </b-button>
-        </b-col>
-      </b-row>
+<template lang="html">
 
-      <b-container class="mt-5 mb-5">
-        <b-row >
-          <b-col class="">
-            <table class="border"  width="100%">
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-              <tr>
-                <td>Наименование товара</td>
-                <td>Кол-во</td>
-              </tr>
-            </table>
-          </b-col>
-        </b-row>
-
-        <b-row >
-          <hr>
-        </b-row>
-
-        <b-row >
-          <b-col class="">
-            <table class="border"  width="100%">
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr  class="bg-info">
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr  class="bg-info">
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr  class="bg-info">
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-              <tr>
-                <td>Статус</td>
-                <td>ОплатаПЛАН</td>
-                <td>
-                  <b-button class="" size="" to="/visit">
-                    Начать визит
-                  </b-button>
-                </td>
-                <td>
-                  <b-button class="" size="">
-                    К клиенту
-                  </b-button>
-                </td>
-              </tr>
-            </table>
-          </b-col>
-        </b-row>
-
-      </b-container>
+<div>
+  <vs-row vs-w="12"  vs-type="flex" vs-justify="flex-start">
+    <vs-col vs-type="flex" vs-justify="flex-start" vs-align="center" vs-xs="6" vs-lg="6">
+      <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
+    </vs-col>
+    <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="6" vs-lg="6">
+      <h4>Сводная</h4>
+    </vs-col>
+  </vs-row>
 
 
-        <b-row class="fixed-bottom bg-white">
-          <b-col>
-          <b-button :pressed.sync="dayWeek" variant="primary" size="lg">
-            {{ dayWeek ? "На неделю" : "На день"}}
-          </b-button>
-            <b-button class="float-right" size="lg">
-              Добавить визит
-            </b-button>
-          </b-col>
-        </b-row>
-    </b-container>
+</div>
+
 </template>
 
 <script>
+// import Sidebar from '@/components/Sidebar.vue';
+import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
+
 
 export default {
+  components: {
+
+  },
   name: 'Home',
+  metaInfo: {
+    title: 'МПР | Домашняя страница',
+  },
+  computed: {
+  },
   data() {
     return {
-      dayWeek: false,
     };
   },
+  created() {
+  },
+  methods:
+    {
+      toggleSidebar() {
+        this.$store.dispatch(TOGGLE_SIDEBAR);
+      },
+    },
 };
 </script>
 
-<style>
+<style lang="stylus">
+    @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 </style>
