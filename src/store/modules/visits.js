@@ -25,7 +25,7 @@ const getters = {
   // eslint-disable-next-line no-shadow
   [VISIT_GET_BY_UUID]: (state, uuid) => state.visits.filter((visit) => visit.UUID === uuid),
   // eslint-disable-next-line no-shadow
-  [VISIT_IS_CURRENT]: (state) => !!state.currentVisit.uuid,
+  [VISIT_IS_CURRENT]: (state) => !!state.currentVisit.UUID,
 };
 
 const actions = {
@@ -62,6 +62,8 @@ const mutations = {
   },
   // eslint-disable-next-line no-shadow
   [VISIT_SAVE_CURENT_TOVUEX]: (state, visitData) => {
+    // eslint-disable-next-line no-param-reassign
+    visitData.status = 1;
     state.currentVisit = visitData;
   },
   // eslint-disable-next-line no-shadow

@@ -16,8 +16,9 @@
       <br>
       <vs-button
         :disabled="!selectedVisit.UUID"
-        @click="startVisit(selectedVisit.UUID, selectedVisit.clientINN)"
-      >Начать визит</vs-button>
+        @click="startVisitFromPlanned(selectedVisit)">
+        Начать визит
+      </vs-button>
 
     </div>
     <div v-else>
@@ -53,12 +54,7 @@ export default {
     clientByINN(inn) {
       return this.$store.getters[GETCLIENTBYINN](inn);
     },
-    startVisit(uuid = undefined, clientINN) {
-      const visitData = { uuid, clientINN };
-      if (uuid !== undefined) {
-        visitData.uuid = this.$uuid.v4();
-      }
-      console.log(visitData);
+    startVisitFromPlanned(visitData) {
       this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, visitData);
       this.$router.push('visit');
     },
