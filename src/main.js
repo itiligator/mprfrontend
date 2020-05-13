@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import UUID from 'vue-uuid';
 import Vuesax from 'vuesax';
 import Axios from 'axios';
 import Meta from 'vue-meta';
@@ -13,6 +14,7 @@ import store from './store';
 import 'vuesax/dist/vuesax.css';
 
 Vue.use(Vuesax);
+Vue.use(UUID);
 
 // Install BootstrapVue
 // Vue.use(BootstrapVue);

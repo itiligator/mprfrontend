@@ -15,6 +15,7 @@
 <script>
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 
+
 export default {
   name: 'Task',
   methods:

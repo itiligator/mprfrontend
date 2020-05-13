@@ -8,15 +8,34 @@
       <h4>Визит</h4>
     </vs-col>
   </vs-row>
+  <vs-row vs-type="flex" vs-justify="center" vs-align="center">
+    <vs-col vs-w="10">
+      <VisitEditor v-if='isCurrentVisit'></VisitEditor>
+      <VisitCreatePanel v-else></VisitCreatePanel>
+    </vs-col>
+  </vs-row>
+
 
 </div>
 </template>
 
 <script>
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
+import VisitEditor from '@/components/VisitEditor.vue';
+import VisitCreatePanel from '@/components/VisitCreatePanel.vue';
+import { VISIT_IS_CURRENT } from '@/store/actions/visits';
 
 export default {
   name: 'Visit',
+  components: {
+    VisitEditor,
+    VisitCreatePanel,
+  },
+  computed: {
+    isCurrentVisit() {
+      return this.$store.getters[VISIT_IS_CURRENT];
+    },
+  },
   methods:
     {
       toggleSidebar() {
