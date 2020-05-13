@@ -43,7 +43,10 @@
              {{ clientByINN(visit.clientINN).clientType }}
            </vs-col>
            <vs-col vs-xs="6" vs-lg="6">
-             <vs-button @click="startVisit(visit.UUID, visit.clientINN)">Начать визит</vs-button>
+             <vs-button
+               :disabled="isCurrentVisit"
+               @click="startVisit(visit.UUID, visit.clientINN)"
+             >Начать визит</vs-button>
            </vs-col>
          </vs-row>
        </vs-collapse-item>
@@ -149,8 +152,9 @@ export default {
         if (uuid !== undefined) {
           visitData.uuid = this.$uuid.v4();
         }
-        this.$store.dispatch.VISIT_SAVE_CURENT_TOVUEX(visitData);
-        this.router.push('visit');
+        console.log(visitData);
+        this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, visitData);
+        this.$router.push('visit');
       },
     },
   created() {

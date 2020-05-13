@@ -1,7 +1,24 @@
 <template>
   <div>
     <div v-if='!isCurrentVisit'>
-        Панелька начала визита
+        <h4>Начать новый визит</h4>
+      <br>
+      <vs-select
+        label="Запланированные визиты"
+        v-model="selectedVisit"
+      >
+        <vs-select-item
+          :key="visit.UUID"
+          :value="visit"
+          :text="clientByINN(visit.clientINN).name"
+          v-for="visit in visits" />
+      </vs-select>
+      <br>
+      <vs-button
+        :disabled="!selectedVisit.UUID"
+        @click="startVisit(selectedVisit.UUID, selectedVisit.clientINN)"
+      >Начать визит</vs-button>
+
     </div>
     <div v-else>
         Визит уже начат
@@ -11,13 +28,39 @@
 
 <script>
 
-import { VISIT_IS_CURRENT } from '@/store/actions/visits';
+import { VISIT_IS_CURRENT, VISIT_GET_ALL, VISIT_SAVE_CURENT_TOVUEX } from '@/store/actions/visits';
+import { GETCLIENTBYINN } from '@/store/actions/clients';
 
 export default {
   name: 'VisitCreatePanel',
+  data() {
+    return {
+      selectedVisit: {},
+    };
+  },
   computed: {
+    visits() {
+      return this.$store.getters[VISIT_GET_ALL];
+    },
+    planned_visits() {
+      return this.visits.filter((v) => v.status === 0);
+    },
     isCurrentVisit() {
       return this.$store.getters[VISIT_IS_CURRENT];
+    },
+  },
+  methods: {
+    clientByINN(inn) {
+      return this.$store.getters[GETCLIENTBYINN](inn);
+    },
+    startVisit(uuid = undefined, clientINN) {
+      const visitData = { uuid, clientINN };
+      if (uuid !== undefined) {
+        visitData.uuid = this.$uuid.v4();
+      }
+      console.log(visitData);
+      this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, visitData);
+      this.$router.push('visit');
     },
   },
   mounted() {
