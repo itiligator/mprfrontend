@@ -72,7 +72,7 @@ export default {
     },
   computed: {
     sidebar_status: {
-      get() { return this.$store.getters.SIDEBAR; },
+      get() { return (this.$store.getters.SIDEBAR); },
       set() { this.$store.commit(TOGGLE_SIDEBAR); },
     },
   },

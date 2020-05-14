@@ -9,6 +9,7 @@ import {
   VISIT_SAVE_CURENT_TOVUEX,
   VISIT_ERROR,
   VISIT_WRITE_DATA_TO_STORE,
+  VISIT_UPDATE_CURRENT_IN_VUEX,
 } from '../actions/visits';
 
 
@@ -52,6 +53,7 @@ const actions = {
   }),
   [VISIT_SAVE_CURENT_TOVUEX]: ({ commit }, visitData) => {
     commit(VISIT_SAVE_CURENT_TOVUEX, visitData);
+    // dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER);
   },
 };
 
@@ -61,7 +63,7 @@ const mutations = {
     state.visits = data;
   },
   // eslint-disable-next-line no-shadow
-  [VISIT_SAVE_CURENT_TOVUEX]: (state, visitData) => {
+  [VISIT_UPDATE_CURRENT_IN_VUEX]: (state, visitData) => {
     // eslint-disable-next-line no-param-reassign
     visitData.status = 1;
     state.currentVisit = visitData;

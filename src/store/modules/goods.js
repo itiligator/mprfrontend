@@ -1,6 +1,8 @@
 import {
   GOODS_REQUEST,
   GOODS_SUCCESS,
+  GOOD_BY_ITEM,
+  ALL_GOODS,
 } from '@/store/actions/goods';
 import { HTTP } from '@/utils/http';
 
@@ -12,7 +14,9 @@ const state = {
 
 const getters = {
   // eslint-disable-next-line no-shadow,arrow-body-style
-  GOODS: (state) => state.goodsstate,
+  [ALL_GOODS]: (state) => state.goodsstate,
+  // eslint-disable-next-line no-shadow,arrow-body-style
+  [GOOD_BY_ITEM]: (state) => (item) => state.goodsstate.find((good) => good.item === item),
 };
 
 const actions = {

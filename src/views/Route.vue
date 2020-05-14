@@ -62,7 +62,8 @@
     <vs-collapse type="border" :accordion="true">
       <vs-collapse-item
         v-for="visit in planned_visits"
-        :key="visit.UUID">
+        :key="visit.UUID"
+      >
         <div slot="header">
           {{ clientByINN(visit.clientINN).name }}
         </div>
@@ -200,6 +201,7 @@ import {
   VISIT_IS_CURRENT, VISIT_SAVE_CURENT_TOVUEX,
 } from '@/store/actions/visits';
 import { CLIENTS_REQUEST, GETALLCLIENTS, GETCLIENTBYINN } from '@/store/actions/clients';
+import { ALL_GOODS } from '@/store/actions/goods';
 
 export default {
   name: 'Route',
@@ -233,6 +235,9 @@ export default {
     clients() {
       return this.$store.getters[GETALLCLIENTS];
     },
+    products() {
+      return this.$store.getters[ALL_GOODS];
+    },
   },
   methods:
     {
@@ -243,7 +248,12 @@ export default {
         return this.$store.getters[GETCLIENTBYINN](inn);
       },
       startVisitFromPlanned(visitData) {
-        this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, visitData);
+        const orders = this.products.map((p) => ({
+          item: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
+        }));
+        const composedVisitData = visitData;
+        composedVisitData.orders = orders;
+        this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, composedVisitData);
         this.$router.push('visit');
       },
     },

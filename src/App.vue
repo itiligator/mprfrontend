@@ -11,11 +11,19 @@
 // import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 import Sidebar from '@/components/Sidebar.vue';
+import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
+import { CLIENTS_REQUEST } from '@/store/actions/clients';
+import { GOODS_REQUEST } from '@/store/actions/goods';
 
 export default {
   name: 'App',
   components: {
     Sidebar,
+  },
+  mounted() {
+    this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
+    this.$store.dispatch(CLIENTS_REQUEST);
+    this.$store.dispatch(GOODS_REQUEST);
   },
   metaInfo: {
     title: 'МПР | Рогозец',

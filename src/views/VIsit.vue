@@ -5,11 +5,10 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="6" vs-lg="6">
-      <h4>Визит</h4>
     </vs-col>
   </vs-row>
   <vs-row vs-type="flex" vs-justify="center" vs-align="center">
-    <vs-col vs-w="10">
+    <vs-col vs-w="11">
       <VisitEditor v-if='isCurrentVisit'></VisitEditor>
       <VisitCreatePanel v-else></VisitCreatePanel>
     </vs-col>
