@@ -198,7 +198,7 @@ import {
   VISIT_DOWNLOAD_ALL_FROM_SERVER,
   VISIT_GET_ALL,
   VISIT_GET_CURRENT,
-  VISIT_IS_CURRENT, VISIT_SAVE_CURENT_TOVUEX,
+  VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TOVUEX,
 } from '@/store/actions/visits';
 import { CLIENTS_REQUEST, GETALLCLIENTS, GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS } from '@/store/actions/goods';
@@ -249,11 +249,12 @@ export default {
       },
       startVisitFromPlanned(visitData) {
         const orders = this.products.map((p) => ({
-          item: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
+          productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
         }));
         const composedVisitData = visitData;
         composedVisitData.orders = orders;
-        this.$store.dispatch(VISIT_SAVE_CURENT_TOVUEX, composedVisitData);
+        composedVisitData.status = 1;
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
         this.$router.push('visit');
       },
     },

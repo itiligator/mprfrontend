@@ -33,22 +33,36 @@
     Задачи
   </vs-sidebar-item>
 
+  <vs-divider icon="info" position="left">
+    Информация
+  </vs-divider>
+
+  <vs-sidebar-item index="5" icon="perm_identity">
+    Клиенты
+  </vs-sidebar-item>
+  <vs-sidebar-item index="6" icon="shopping_cart">
+    Продукция
+  </vs-sidebar-item>
+  <vs-sidebar-item index="7" icon="grade">
+    Промо
+  </vs-sidebar-item>
 
     <vs-divider icon="bug_report" position="left">
     Отладка
   </vs-divider>
 
-  <vs-sidebar-item index="5" icon="autorenew" @click="resetvisits">
+  <vs-sidebar-item index="8" icon="autorenew" @click="resetvisits">
     Сбросить визиты
   </vs-sidebar-item>
-  <vs-sidebar-item index="6" icon="all_inbox" to="/datatest">
-    Посмотреть все данные
-  </vs-sidebar-item>
+<!--  <vs-sidebar-item index="6" icon="all_inbox" to="/datatest">-->
+<!--    Посмотреть все данные-->
+<!--  </vs-sidebar-item>-->
 
 
   <div class="footer-sidebar" slot="footer">
-    <vs-button icon="reply" color="danger" type="flat" to="/logout">Выйти из системы</vs-button>
-    <vs-button icon="settings" color="primary" type="border"></vs-button>
+    <vs-button icon="reply" color="danger" type="border" to="/logout">Выйти из системы</vs-button>
+    <vs-button icon="close" color="primary" type="border" @click="sidebar_status=false">
+      Закрыть</vs-button>
   </div>
 
 </vs-sidebar>
