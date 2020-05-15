@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!!currentVisit.UUID">
     <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
     <br>
     <vs-card>
@@ -71,47 +71,47 @@
 
     </vs-card>
 
-    <vs-card>
-      <div slot="header">
-        <h2>
-          Чек-лист
-        </h2>
-      </div>
-      <vs-table stripe :hoverFlat="true" noDataText="">
-        <template slot="thead">
-        <vs-th>
-          Сорт пива
-        </vs-th>
-        <vs-th>
-          Цена
-        </vs-th>
-        <vs-th>
-          Остаток
-        </vs-th>
-        </template>
-        <vs-tr>
-          <vs-td>Цена на СС за 0.5</vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-        </vs-tr>
-        <vs-tr>
-          <vs-td>Цена на СТ 0.5</vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-        </vs-tr>
-        <vs-tr>
-          <vs-td>Цена на СП за 0.5</vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-        </vs-tr>
-        <vs-tr>
-          <vs-td>Цена на ХБ за 0.5</vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>
-        </vs-tr>
+<!--    <vs-card>-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Чек-лист-->
+<!--        </h2>-->
+<!--      </div>-->
+<!--      <vs-table stripe :hoverFlat="true" noDataText="">-->
+<!--        <template slot="thead">-->
+<!--        <vs-th>-->
+<!--          Сорт пива-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Цена-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Остаток-->
+<!--        </vs-th>-->
+<!--        </template>-->
+<!--        <vs-tr>-->
+<!--          <vs-td>Цена на СС за 0.5</vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--        </vs-tr>-->
+<!--        <vs-tr>-->
+<!--          <vs-td>Цена на СТ 0.5</vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--        </vs-tr>-->
+<!--        <vs-tr>-->
+<!--          <vs-td>Цена на СП за 0.5</vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--        </vs-tr>-->
+<!--        <vs-tr>-->
+<!--          <vs-td>Цена на ХБ за 0.5</vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
+<!--        </vs-tr>-->
 
-      </vs-table>
-    </vs-card>
+<!--      </vs-table>-->
+<!--    </vs-card>-->
 
     <vs-card>
       <div slot="header">
@@ -134,14 +134,25 @@
         <vs-button @click="saveCurrentVisitToVuex">Сохранить и отправить</vs-button>
       </vs-col>
       <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="4" vs-lg="4">
-        <vs-button>Закончить визит</vs-button>
+        <vs-button @click="finishVisit">Закончить визит</vs-button>
       </vs-col>
     </vs-row>
+
+<!--    <vs-row class="fixed-row-bottom">-->
+<!--      <vs-col>-->
+<!--        <vs-button type="border" icon="business_center"></vs-button>-->
+<!--        <vs-button icon="map"></vs-button>-->
+<!--        <vs-button icon="location_on"></vs-button>-->
+<!--        <vs-button icon="list_alt"></vs-button>-->
+<!--        <vs-button icon="info"></vs-button>-->
+<!--      </vs-col>-->
+<!--    </vs-row>-->
 
   </div>
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 
 
 import { VISIT_GET_CURRENT, VISIT_SAVE_CURRENT_TOVUEX } from '@/store/actions/visits';
@@ -181,6 +192,13 @@ export default {
         this.currentVisit = {};
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
       },
+      finishVisit() {
+        // clearInterval(this.timer);
+        this.currentVisit.status = 2;
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.currentVisit = {};
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+      },
       clientByINN(inn) {
         return this.$store.getters[GETCLIENTBYINN](inn);
       },
@@ -192,5 +210,5 @@ export default {
 </script>
 
 <style scoped>
-
+  .fixed-row-bottom { position: fixed; bottom: 0; z-index: 999;}
 </style>

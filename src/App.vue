@@ -21,9 +21,11 @@ export default {
     Sidebar,
   },
   mounted() {
-    this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
-    this.$store.dispatch(CLIENTS_REQUEST);
-    this.$store.dispatch(GOODS_REQUEST);
+    if (this.$store.getters.isAuthenticated) {
+      this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
+      this.$store.dispatch(CLIENTS_REQUEST);
+      this.$store.dispatch(GOODS_REQUEST);
+    }
   },
   metaInfo: {
     title: 'МПР | Рогозец',

@@ -3,6 +3,7 @@
 
 import { HTTP } from '@/utils/http';
 
+import { HIDE_SIDEBAR } from '@/store/actions/UI';
 import {
   AUTH_REQUEST,
   AUTH_ERROR,
@@ -47,6 +48,7 @@ const actions = {
   }),
   [AUTH_LOGOUT]: ({ commit }) => new Promise((resolve) => {
     commit(AUTH_LOGOUT);
+    commit(HIDE_SIDEBAR);
     window.localStorage.removeItem('user-token');
     resolve();
   }),

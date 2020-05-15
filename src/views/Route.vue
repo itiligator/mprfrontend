@@ -251,7 +251,7 @@ export default {
         const orders = this.products.map((p) => ({
           productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
         }));
-        const composedVisitData = visitData;
+        const composedVisitData = JSON.parse(JSON.stringify(visitData));
         composedVisitData.orders = orders;
         composedVisitData.status = 1;
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);

@@ -25,7 +25,7 @@ const successHandler = (response) => {
 // eslint-disable-next-line import/prefer-default-export
 export const HTTP = axios.create({
   baseURL: 'http://46.174.253.173:8000/api/',
-  timeout: 2000,
+  timeout: 10000,
   headers: (token === null) ? {} : { Authorization: `Token ${token}` },
 });
 

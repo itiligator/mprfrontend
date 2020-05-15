@@ -11,7 +11,7 @@
           :key="visit.UUID"
           :value="visit"
           :text="clientByINN(visit.clientINN).name"
-          v-for="visit in visits" />
+          v-for="visit in planned_visits" />
       </vs-select>
       <br>
       <vs-button
@@ -59,14 +59,18 @@ export default {
       return this.$store.getters[GETCLIENTBYINN](inn);
     },
     startVisitFromPlanned(visitData) {
+      console.log('start visit at the beginning before orders fetch');
       const orders = this.products.map((p) => ({
         productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
       }));
-      const composedVisitData = visitData;
+      console.log('start before composed data defining');
+      const composedVisitData = JSON.parse(JSON.stringify(visitData));
+      console.log('start before composed data editing');
       composedVisitData.orders = orders;
       composedVisitData.status = 1;
+      console.log('start before dispatch');
       this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
-      this.$router.push('visit');
+      // this.$router.push('visit');
     },
   },
   mounted() {

@@ -55,7 +55,7 @@ const actions = {
       });
   }),
   [VISIT_SAVE_CURRENT_TOVUEX]: ({ commit, dispatch }, visitData) => {
-    console.log('i m here in action');
+    console.log('i m here in VISIT_SAVE_CURRENT_TOVUEX action');
     commit(VISIT_UPDATE_CURRENT_IN_VUEX, visitData);
     if (visitData.UUID !== undefined) { dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER); }
   },
@@ -68,7 +68,7 @@ const mutations = {
   },
   // eslint-disable-next-line no-shadow
   [VISIT_UPDATE_CURRENT_IN_VUEX]: (state, visitData) => {
-    console.log('i m in mutation');
+    console.log('i m in VISIT_UPDATE_CURRENT_IN_VUEX mutation');
     // eslint-disable-next-line no-param-reassign
     // visitData.status = 1;
     state.currentVisit = visitData;
