@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 // import order from '@/store/modules/order';
 import clients from '@/store/modules/clients';
 import goods from '@/store/modules/goods';
+import checklists from '@/store/modules/checklists';
 import createPersistedState from 'vuex-persistedstate';
 import user from './modules/user';
 import UI from './modules/UI';
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     visits,
     goods,
     clients,
+    checklists,
     // order,
   },
   strict: debug,

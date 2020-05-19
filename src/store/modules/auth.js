@@ -4,6 +4,10 @@
 import { HTTP } from '@/utils/http';
 
 import { HIDE_SIDEBAR } from '@/store/actions/UI';
+import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
+import { CLIENTS_REQUEST } from '@/store/actions/clients';
+import { GOODS_REQUEST } from '@/store/actions/goods';
+import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
 import {
   AUTH_REQUEST,
   AUTH_ERROR,
@@ -38,6 +42,10 @@ const actions = {
         // `Token ${localStorage.getItem('user-token')}`;
         commit(AUTH_SUCCESS, resp);
         dispatch(USER_REQUEST);
+        dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
+        dispatch(CLIENTS_REQUEST);
+        dispatch(GOODS_REQUEST);
+        dispatch(CHECKLISTS_REQUEST);
         resolve(resp);
       })
       .catch((err) => {

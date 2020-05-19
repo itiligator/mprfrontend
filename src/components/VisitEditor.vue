@@ -71,47 +71,76 @@
 
     </vs-card>
 
-<!--    <vs-card>-->
-<!--      <div slot="header">-->
-<!--        <h2>-->
-<!--          Чек-лист-->
-<!--        </h2>-->
-<!--      </div>-->
-<!--      <vs-table stripe :hoverFlat="true" noDataText="">-->
-<!--        <template slot="thead">-->
-<!--        <vs-th>-->
-<!--          Сорт пива-->
-<!--        </vs-th>-->
-<!--        <vs-th>-->
-<!--          Цена-->
-<!--        </vs-th>-->
-<!--        <vs-th>-->
-<!--          Остаток-->
-<!--        </vs-th>-->
-<!--        </template>-->
-<!--        <vs-tr>-->
-<!--          <vs-td>Цена на СС за 0.5</vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--        </vs-tr>-->
-<!--        <vs-tr>-->
-<!--          <vs-td>Цена на СТ 0.5</vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--        </vs-tr>-->
-<!--        <vs-tr>-->
-<!--          <vs-td>Цена на СП за 0.5</vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--        </vs-tr>-->
-<!--        <vs-tr>-->
-<!--          <vs-td>Цена на ХБ за 0.5</vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--          <vs-td><vs-input size="small" type="number"></vs-input> </vs-td>-->
-<!--        </vs-tr>-->
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType==='Хорека'">
+      <div slot="header">
+        <h2>
+          Чек-лист
+        </h2>
+      </div>
+      <vs-table stripe :hoverFlat="true"
+                :data="checklists.filter((q) => q.section === 'Цены' )"
+                noDataText="Вопросы в чеклисте отсутствуют">
+        <template slot="thead">
+        <vs-th>
+          Сорт пива
+        </vs-th>
+        <vs-th>
+          Цена
+        </vs-th>
+        <vs-th>
+          Остаток
+        </vs-th>
+        </template>
 
-<!--      </vs-table>-->
-<!--    </vs-card>-->
+        <template slot-scope="{data}">
+        <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+
+          <vs-td :data="data[index].productItem">
+            {{ question.text }}
+          </vs-td>
+
+          <vs-td :data="data[index].answer1">
+            <vs-input v-model="data[index].answer1"/>
+          </vs-td>
+
+          <vs-td :data="data[index].answer2">
+            <vs-input v-model="data[index].answer2"/>
+          </vs-td>
+
+        </vs-tr>
+        </template>
+
+      </vs-table>
+      <vs-table stripe :hoverFlat="true"
+                :data="checklists.filter((q) => q.section === 'Кеги' )"
+                noDataText="Вопросы в чеклисте отсутствуют">
+        <template slot="thead">
+        <vs-th>
+          Вопросы
+        </vs-th>
+        <vs-th>
+          Ответы
+        </vs-th>
+        </template>
+
+        <template slot-scope="{data}">
+        <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+
+          <vs-td :data="data[index].productItem">
+            {{ question.text }}
+          </vs-td>
+
+          <vs-td :data="data[index].answer1">
+            <vs-input v-model="data[index].answer1"/>
+          </vs-td>
+
+        </vs-tr>
+        </template>
+
+      </vs-table>
+    </vs-card>
+
+    {{ checklists }}
 
     <vs-card>
       <div slot="header">
@@ -158,6 +187,7 @@
 import { VISIT_GET_CURRENT, VISIT_SAVE_CURRENT_TOVUEX } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS, GOOD_BY_ITEM, GOODS_REQUEST } from '@/store/actions/goods';
+import { CHECKLISTS_ALL } from '@/store/actions/checklists';
 
 export default {
   name: 'VisitEditor',
@@ -169,12 +199,21 @@ export default {
   data() {
     return {
       currentVisit: {},
+      checklists: [],
       timer: '',
     };
   },
   created() {
     this.$store.dispatch(GOODS_REQUEST);
     this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
+    const { clientType } = this.clientByINN(this.currentVisit.clientINN);
+    // eslint-disable-next-line max-len
+    this.checklists = JSON.parse(JSON.stringify(this.$store.getters[CHECKLISTS_ALL])).filter((q) => q.clientType === clientType);
+    // this.checklists.forEach((v) => { v.answer1 = ''; v.answer2 = ''; });
+    // for (let i = 0; this.checklists.length; i += 1) {
+    //   this.checklists[i].answer1 = '';
+    //   this.checklists[i].answer2 = '';
+    // }
   },
   mounted() {
     // this.timer = setInterval(this.saveCurrentVisitToVuex, 10000);

@@ -14,6 +14,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
 import { CLIENTS_REQUEST } from '@/store/actions/clients';
 import { GOODS_REQUEST } from '@/store/actions/goods';
+import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
 
 export default {
   name: 'App',
@@ -25,6 +26,7 @@ export default {
       this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
       this.$store.dispatch(CLIENTS_REQUEST);
       this.$store.dispatch(GOODS_REQUEST);
+      this.$store.dispatch(CHECKLISTS_REQUEST);
     }
   },
   metaInfo: {
