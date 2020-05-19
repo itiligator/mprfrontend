@@ -32,6 +32,7 @@
 import { VISIT_IS_CURRENT, VISIT_GET_ALL, VISIT_SAVE_CURRENT_TOVUEX } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS } from '@/store/actions/goods';
+import { CHECKLIST_SAVE_CURRENT, CHECKLISTS_GET_ALL } from '@/store/actions/checklists';
 
 export default {
   name: 'VisitCreatePanel',
@@ -59,18 +60,21 @@ export default {
       return this.$store.getters[GETCLIENTBYINN](inn);
     },
     startVisitFromPlanned(visitData) {
-      console.log('start visit at the beginning before orders fetch');
+      // console.log('start visit at the beginning before orders fetch');
       const orders = this.products.map((p) => ({
         productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
       }));
-      console.log('start before composed data defining');
+      // console.log('start before composed data defining');
       const composedVisitData = JSON.parse(JSON.stringify(visitData));
-      console.log('start before composed data editing');
+      // console.log('start before composed data editing');
       composedVisitData.orders = orders;
       composedVisitData.status = 1;
-      console.log('start before dispatch');
+      // console.log('start before dispatch');
       this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
-      // this.$router.push('visit');
+      const { clientType } = this.clientByINN(composedVisitData.clientINN);
+      // eslint-disable-next-line max-len
+      const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);
+      this.$store.dispatch(CHECKLIST_SAVE_CURRENT, currentChecklist);
     },
   },
   mounted() {

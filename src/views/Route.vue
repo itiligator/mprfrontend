@@ -202,6 +202,7 @@ import {
 } from '@/store/actions/visits';
 import { CLIENTS_REQUEST, GETALLCLIENTS, GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS } from '@/store/actions/goods';
+import { CHECKLIST_SAVE_CURRENT, CHECKLISTS_GET_ALL } from '@/store/actions/checklists';
 
 export default {
   name: 'Route',
@@ -255,12 +256,14 @@ export default {
         composedVisitData.orders = orders;
         composedVisitData.status = 1;
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
+        const { clientType } = this.clientByINN(composedVisitData.clientINN);
+        // eslint-disable-next-line max-len
+        const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);
+        this.$store.dispatch(CHECKLIST_SAVE_CURRENT, currentChecklist);
         this.$router.push('visit');
       },
     },
   created() {
-    this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
-    this.$store.dispatch(CLIENTS_REQUEST);
   },
 };
 </script>

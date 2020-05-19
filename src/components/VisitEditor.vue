@@ -2,7 +2,7 @@
   <div v-if="!!currentVisit.UUID">
     <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
     <br>
-    <vs-card>
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType != 'Магазин'">
       <div slot="header">
         <h2>
           Оплата
@@ -22,7 +22,7 @@
 
     </vs-card>
 
-    <vs-card>
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType != 'Магазин'">
       <div slot="header">
         <h2>
           Заказ
@@ -71,14 +71,17 @@
 
     </vs-card>
 
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType==='Хорека'">
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
+    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'">
       <div slot="header">
         <h2>
           Чек-лист
         </h2>
       </div>
+      <vs-row>
+        <vs-col vs-w="12">
       <vs-table stripe :hoverFlat="true"
-                :data="checklists.filter((q) => q.section === 'Цены' )"
+                :data="checklist.filter((q) => q.section === 'Цены' )"
                 noDataText="Вопросы в чеклисте отсутствуют">
         <template slot="thead">
         <vs-th>
@@ -95,7 +98,7 @@
         <template slot-scope="{data}">
         <vs-tr :key="question.UUID" v-for="(question, index) in data" >
 
-          <vs-td :data="data[index].productItem">
+          <vs-td :data="question.text">
             {{ question.text }}
           </vs-td>
 
@@ -112,7 +115,7 @@
 
       </vs-table>
       <vs-table stripe :hoverFlat="true"
-                :data="checklists.filter((q) => q.section === 'Кеги' )"
+                :data="checklist.filter((q) => q.section === 'Кеги' )"
                 noDataText="Вопросы в чеклисте отсутствуют">
         <template slot="thead">
         <vs-th>
@@ -126,7 +129,7 @@
         <template slot-scope="{data}">
         <vs-tr :key="question.UUID" v-for="(question, index) in data" >
 
-          <vs-td :data="data[index].productItem">
+          <vs-td :data="question.text">
             {{ question.text }}
           </vs-td>
 
@@ -138,9 +141,55 @@
         </template>
 
       </vs-table>
+        </vs-col>
+      </vs-row>
     </vs-card>
 
-    {{ checklists }}
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">
+      <div slot="header">
+        <h2>
+          Чек-лист
+        </h2>
+      </div>
+      <vs-row>
+        <vs-col vs-w="12">
+          <vs-table stripe :hoverFlat="true"
+                    :data="checklist.filter((q) => q.section === 'Общий' )"
+                    noDataText="Вопросы в чеклисте отсутствуют">
+            <template slot="thead">
+            <vs-th>
+              Мероприятия
+            </vs-th>
+            <vs-th>
+              Отметка провер.
+            </vs-th>
+            <vs-th>
+              Примечание
+            </vs-th>
+            </template>
+
+            <template slot-scope="{data}">
+            <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+
+              <vs-td :data="question.text">
+                {{ question.text }}
+              </vs-td>
+
+              <vs-td :data="data[index].answer1">
+                <vs-switch v-model="data[index].answer1"></vs-switch>
+              </vs-td>
+
+              <vs-td :data="data[index].answer2">
+                <vs-input v-model="data[index].answer2"/>
+              </vs-td>
+
+            </vs-tr>
+            </template>
+
+          </vs-table>
+        </vs-col>
+      </vs-row>
+    </vs-card>
 
     <vs-card>
       <div slot="header">
@@ -160,7 +209,6 @@
         <vs-button @click="resetVisit">Отменить визит</vs-button>
       </vs-col>
       <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="4" vs-lg="4">
-        <vs-button @click="saveCurrentVisitToVuex">Сохранить и отправить</vs-button>
       </vs-col>
       <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="4" vs-lg="4">
         <vs-button @click="finishVisit">Закончить визит</vs-button>
@@ -184,10 +232,20 @@
 /* eslint-disable no-unused-vars */
 
 
-import { VISIT_GET_CURRENT, VISIT_SAVE_CURRENT_TOVUEX } from '@/store/actions/visits';
+import {
+  VISIT_GET_CURRENT,
+  VISIT_PUSH_CURRENT_TO_ALL,
+  VISIT_SAVE_CURRENT_TOVUEX,
+  VISIT_UPLOAD_CURRENT_TO_SERVER,
+} from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS, GOOD_BY_ITEM, GOODS_REQUEST } from '@/store/actions/goods';
-import { CHECKLISTS_ALL } from '@/store/actions/checklists';
+import {
+  CHECKLISTS_GET_ALL,
+  CHECKLIST_RESET_CURRENT,
+  CHECKLIST_GET_CURRENT,
+  CHECKLIST_SAVE_CURRENT, CHECKLIST_UPLOAD_CURRENT_TO_SERVER,
+} from '@/store/actions/checklists';
 
 export default {
   name: 'VisitEditor',
@@ -199,44 +257,46 @@ export default {
   data() {
     return {
       currentVisit: {},
-      checklists: [],
+      checklist: [],
       timer: '',
     };
   },
   created() {
-    this.$store.dispatch(GOODS_REQUEST);
     this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
-    const { clientType } = this.clientByINN(this.currentVisit.clientINN);
-    // eslint-disable-next-line max-len
-    this.checklists = JSON.parse(JSON.stringify(this.$store.getters[CHECKLISTS_ALL])).filter((q) => q.clientType === clientType);
-    // this.checklists.forEach((v) => { v.answer1 = ''; v.answer2 = ''; });
-    // for (let i = 0; this.checklists.length; i += 1) {
-    //   this.checklists[i].answer1 = '';
-    //   this.checklists[i].answer2 = '';
-    // }
+    this.checklist = JSON.parse(JSON.stringify(this.$store.getters[CHECKLIST_GET_CURRENT]));
   },
   mounted() {
-    // this.timer = setInterval(this.saveCurrentVisitToVuex, 10000);
+  },
+  beforeDestroy() {
+    this.saveCurrentVisitToVuex();
+    this.saveCurrentChecklistToVuex();
   },
   methods:
     {
       saveCurrentVisitToVuex() {
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
-        this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
+      },
+      saveCurrentChecklistToVuex() {
+        this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
       },
       resetVisit() {
-        // clearInterval(this.timer);
-        this.currentVisit.status = 0;
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.checklist = [];
+        this.$store.dispatch(CHECKLIST_RESET_CURRENT);
         this.currentVisit = {};
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
       },
       finishVisit() {
-        // clearInterval(this.timer);
+        this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
+        this.$store.dispatch(CHECKLIST_UPLOAD_CURRENT_TO_SERVER);
         this.currentVisit.status = 2;
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.$store.dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER);
+        this.$store.dispatch(VISIT_PUSH_CURRENT_TO_ALL);
+        this.checklist = [];
+        this.$store.dispatch(CHECKLIST_RESET_CURRENT);
         this.currentVisit = {};
         this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.$router.push('/route');
       },
       clientByINN(inn) {
         return this.$store.getters[GETCLIENTBYINN](inn);
