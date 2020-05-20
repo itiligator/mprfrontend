@@ -65,7 +65,7 @@
         :key="visit.UUID"
       >
         <div slot="header">
-          {{ clientByINN(visit.clientINN).name }}
+          #{{ visit.id }} {{ clientByINN(visit.clientINN).name }}
         </div>
         <vs-row>
           <vs-col vs-xs="6" vs-lg="6">
@@ -123,7 +123,7 @@
         v-for="visit in finished_visits"
         :key="visit.UUID">
         <div slot="header">
-          {{ clientByINN(visit.clientINN).name }}
+          #{{ visit.id }} {{ clientByINN(visit.clientINN).name }}
         </div>
         <vs-row>
           <vs-col vs-xs="6" vs-lg="6">
@@ -196,9 +196,8 @@
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 import {
   VISIT_DOWNLOAD_ALL_FROM_SERVER,
-  VISIT_GET_ALL,
-  VISIT_GET_CURRENT,
-  VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TOVUEX,
+  VISIT_GET_CURRENT, VISIT_GET_FINISHED, VISIT_GET_PLANNED,
+  VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TO_VUEX,
 } from '@/store/actions/visits';
 import { CLIENTS_REQUEST, GETALLCLIENTS, GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS } from '@/store/actions/goods';
@@ -217,15 +216,18 @@ export default {
     };
   },
   computed: {
-    visits() {
-      return this.$store.getters[VISIT_GET_ALL];
-    },
+    // visits() {
+    //   return this.$store.getters[VISIT_GET_ALL];
+    // },
     planned_visits() {
       const today = new Date().toISOString().slice(0, 10);
-      return this.visits.filter((v) => v.status === 0 && (!this.todayOnly || v.date === today));
+      // return this.visits.filter((v) => v.status === 0 && (!this.todayOnly || v.date === today));
+      return this.$store.getters[VISIT_GET_PLANNED]
+        .filter((v) => v.status === 0 && (!this.todayOnly || v.date === today));
     },
     finished_visits() {
-      return this.visits.filter((v) => v.status === 2);
+      // return this.visits.filter((v) => v.status === 2);
+      return this.$store.getters[VISIT_GET_FINISHED];
     },
     isCurrentVisit() {
       return this.$store.getters[VISIT_IS_CURRENT];
@@ -255,7 +257,7 @@ export default {
         const composedVisitData = JSON.parse(JSON.stringify(visitData));
         composedVisitData.orders = orders;
         composedVisitData.status = 1;
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
         const { clientType } = this.clientByINN(composedVisitData.clientINN);
         // eslint-disable-next-line max-len
         const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);

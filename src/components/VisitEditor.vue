@@ -233,9 +233,9 @@
 
 
 import {
+  VISIT_CLOSE_CURRENT,
   VISIT_GET_CURRENT,
-  VISIT_PUSH_CURRENT_TO_ALL,
-  VISIT_SAVE_CURRENT_TOVUEX,
+  VISIT_SAVE_CURRENT_TO_VUEX,
   VISIT_UPLOAD_CURRENT_TO_SERVER,
 } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
@@ -274,7 +274,7 @@ export default {
   methods:
     {
       saveCurrentVisitToVuex() {
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       saveCurrentChecklistToVuex() {
         this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
@@ -283,19 +283,20 @@ export default {
         this.checklist = [];
         this.$store.dispatch(CHECKLIST_RESET_CURRENT);
         this.currentVisit = {};
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       finishVisit() {
         this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
         this.$store.dispatch(CHECKLIST_UPLOAD_CURRENT_TO_SERVER);
-        this.currentVisit.status = 2;
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
-        this.$store.dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER);
-        this.$store.dispatch(VISIT_PUSH_CURRENT_TO_ALL);
+        // this.currentVisit.status = 2;
+        // this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
+        // this.$store.dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER);
+        // this.$store.dispatch(VISIT_PUSH_CURRENT_TO_ALL);
+        this.$store.dispatch(VISIT_CLOSE_CURRENT);
         this.checklist = [];
         this.$store.dispatch(CHECKLIST_RESET_CURRENT);
-        this.currentVisit = {};
-        this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, this.currentVisit);
+        // this.currentVisit = {};
+        // this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
         this.$router.push('/route');
       },
       clientByINN(inn) {

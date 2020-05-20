@@ -10,7 +10,7 @@
         <vs-select-item
           :key="visit.UUID"
           :value="visit"
-          :text="clientByINN(visit.clientINN).name"
+          :text="'#' + visit.id + ' ' + clientByINN(visit.clientINN).name"
           v-for="visit in planned_visits" />
       </vs-select>
       <br>
@@ -29,7 +29,7 @@
 
 <script>
 
-import { VISIT_IS_CURRENT, VISIT_GET_ALL, VISIT_SAVE_CURRENT_TOVUEX } from '@/store/actions/visits';
+import { VISIT_GET_PLANNED, VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TO_VUEX } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
 import { ALL_GOODS } from '@/store/actions/goods';
 import { CHECKLIST_SAVE_CURRENT, CHECKLISTS_GET_ALL } from '@/store/actions/checklists';
@@ -42,11 +42,12 @@ export default {
     };
   },
   computed: {
-    visits() {
-      return this.$store.getters[VISIT_GET_ALL];
-    },
+    // visits() {
+    //   return this.$store.getters[VISIT_GET_ALL];
+    // },
     planned_visits() {
-      return this.visits.filter((v) => v.status === 0);
+      // return this.visits.filter((v) => v.status === 0);
+      return this.$store.getters[VISIT_GET_PLANNED];
     },
     isCurrentVisit() {
       return this.$store.getters[VISIT_IS_CURRENT];
@@ -70,7 +71,7 @@ export default {
       composedVisitData.orders = orders;
       composedVisitData.status = 1;
       // console.log('start before dispatch');
-      this.$store.dispatch(VISIT_SAVE_CURRENT_TOVUEX, composedVisitData);
+      this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
       const { clientType } = this.clientByINN(composedVisitData.clientINN);
       // eslint-disable-next-line max-len
       const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);
