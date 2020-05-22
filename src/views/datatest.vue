@@ -15,7 +15,7 @@
 
 <script>
 
-import { VISIT_DOWNLOAD_ALL_FROM_SERVER, VISIT_GET_ALL } from '@/store/actions/visits';
+import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 
 export default {
@@ -23,7 +23,7 @@ export default {
   components: {
   },
   computed: {
-    visitsdata() { return this.$store.getters[VISIT_GET_ALL]; },
+    visitsdata() { return false; },
   },
   mounted() {
     this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);

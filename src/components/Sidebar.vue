@@ -74,6 +74,7 @@
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 import { USER_REQUEST } from '@/store/actions/user';
 import { HTTP } from '@/utils/http';
+import { VISIT_DOWNLOAD_ALL_FROM_SERVER, VISIT_FLASH_ALL } from '@/store/actions/visits';
 
 export default {
   name: 'Sidebar',
@@ -82,6 +83,8 @@ export default {
     {
       resetvisits() {
         HTTP.get('/resetvisits');
+        this.$store.commit(VISIT_FLASH_ALL);
+        this.$store.dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
       },
     },
   computed: {

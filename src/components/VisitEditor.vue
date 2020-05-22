@@ -2,7 +2,7 @@
   <div v-if="!!currentVisit.UUID">
     <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
     <br>
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType != 'Магазин'">
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
       <div slot="header">
         <h2>
           Оплата
@@ -18,11 +18,11 @@
         label-placeholder="Сумма оплаты"
         v-model.number="currentVisit.payment"/>
       <br>
-      <vs-button>Посмотреть расчеты</vs-button>
+      <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>
 
     </vs-card>
 
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType != 'Магазин'">
+    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
       <div slot="header">
         <h2>
           Заказ
@@ -54,15 +54,12 @@
             <vs-input-number v-model="data[index].order"/>
             реком. {{ data[index].recommend }}
           </vs-td>
-
-
           <vs-td :data="data[index].balance">
             <vs-input-number v-model="data[index].balance"/>
             <br>
           </vs-td>
-
           <vs-td :data="data[index].sales">
-            <vs-input-number v-model="data[index].sales"/>
+            {{ data[index].sales }}
             <br>
           </vs-td>
         </vs-tr>
@@ -229,23 +226,21 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
 
 
 import {
-  VISIT_CLOSE_CURRENT,
+  VISIT_CLOSE_CURRENT, VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER,
   VISIT_GET_CURRENT,
   VISIT_SAVE_CURRENT_TO_VUEX,
-  VISIT_UPLOAD_CURRENT_TO_SERVER,
 } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
-import { ALL_GOODS, GOOD_BY_ITEM, GOODS_REQUEST } from '@/store/actions/goods';
+import { ALL_GOODS, GOOD_BY_ITEM } from '@/store/actions/goods';
 import {
-  CHECKLISTS_GET_ALL,
   CHECKLIST_RESET_CURRENT,
   CHECKLIST_GET_CURRENT,
   CHECKLIST_SAVE_CURRENT, CHECKLIST_UPLOAD_CURRENT_TO_SERVER,
 } from '@/store/actions/checklists';
+import ClientPaymentHistory from '@/components/ClientPaymentHistory.vue';
 
 export default {
   name: 'VisitEditor',
@@ -253,6 +248,9 @@ export default {
     products() {
       return this.$schema.getters[ALL_GOODS];
     },
+  },
+  components: {
+    ClientPaymentHistory,
   },
   data() {
     return {
@@ -264,6 +262,7 @@ export default {
   created() {
     this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
     this.checklist = JSON.parse(JSON.stringify(this.$store.getters[CHECKLIST_GET_CURRENT]));
+    this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);
   },
   mounted() {
   },

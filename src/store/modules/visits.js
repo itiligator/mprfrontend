@@ -10,7 +10,7 @@ import {
   VISIT_ERROR, VISIT_FLASH_ALL,
   VISIT_GET_CURRENT,
   VISIT_GET_FINISHED,
-  VISIT_GET_HISTORY,
+  VISIT_GET_HISTORY_BY_INN,
   VISIT_GET_PLANNED,
   VISIT_IS_CURRENT,
   VISIT_SAVE_CURRENT_TO_VUEX,
@@ -52,7 +52,7 @@ const getters = {
   [VISIT_IS_CURRENT]: (s) => !!s.currentVisit.UUID,
   [VISIT_GET_PLANNED]: (s) => s.plannedVisits,
   [VISIT_GET_FINISHED]: (s) => s.finishedVisits,
-  [VISIT_GET_HISTORY]: (s) => s.historicalVisits,
+  [VISIT_GET_HISTORY_BY_INN]: (s) => (inn) => s.historicalVisits[inn],
 };
 
 

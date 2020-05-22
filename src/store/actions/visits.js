@@ -5,7 +5,7 @@ export const VISIT_GET_PLANNED = 'VISIT_GET_PLANNED'; // геттер масси
 export const VISIT_GET_FINISHED = 'VISIT_GET_FINISHED'; // геттер массива всех заверешнных визитов
 export const VISIT_GET_CURRENT = 'VISIT_GET_CURRENT'; // геттер текущего визита
 export const VISIT_IS_CURRENT = 'VISIT_IS_CURRENT'; // состояние текущего визита
-export const VISIT_GET_HISTORY = 'VISIT_GET_HISTORY'; // геттер объекта исторических визитов (ключи - UUID)
+export const VISIT_GET_HISTORY_BY_INN = 'VISIT_GET_HISTORY_BY_INN'; // геттер объекта исторических визитов (ключи - UUID)
 
 
 // действия
