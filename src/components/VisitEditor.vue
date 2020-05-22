@@ -1,7 +1,11 @@
 <template>
   <div v-if="!!currentVisit.UUID">
+
+<!--    заголовок страницы-->
     <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
     <br>
+
+<!--    панелька оплаты для Драфт и Хорека-->
     <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
       <div slot="header">
         <h2>
@@ -22,52 +26,97 @@
 
     </vs-card>
 
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+<!--    заказ в виде таблицы-->
+<!--    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Заказ-->
+<!--        </h2>-->
+<!--      </div>-->
+
+<!--      <vs-table :data="currentVisit.orders" v-model="selectedOrder">-->
+<!--        <template slot="thead">-->
+<!--        <vs-th>-->
+<!--          Товар-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Заказ-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Остаток-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Продажи-->
+<!--        </vs-th>-->
+<!--        </template>-->
+
+<!--        <template slot-scope="{data}">-->
+<!--        <vs-tr :key="product.productItem" :data="product" v-for="(product, index) in data" >-->
+<!--          <vs-td :data="data[index].productItem">-->
+<!--            {{ productByItem(data[index].productItem).name }}-->
+<!--          </vs-td>-->
+<!--          <vs-td :data="data[index].order">-->
+<!--            <vs-input-number v-model="data[index].order"/>-->
+<!--            реком. {{ data[index].recommend }}-->
+<!--          </vs-td>-->
+<!--          <vs-td :data="data[index].balance">-->
+<!--            <vs-input-number v-model="data[index].balance"/>-->
+<!--            <br>-->
+<!--          </vs-td>-->
+<!--          <vs-td :data="data[index].sales">-->
+<!--            {{ data[index].sales }}-->
+<!--            <br>-->
+<!--          </vs-td>-->
+<!--        </vs-tr>-->
+<!--        </template>-->
+<!--      </vs-table>-->
+
+<!--    </vs-card>-->
+
+
+<!--    заказ в виде списка-->
+        <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+          <div slot="header">
+            <h2>
+              Заказ
+            </h2>
+          </div>
+  <vs-collapse>
+    <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
       <div slot="header">
-        <h2>
-          Заказ
-        </h2>
+        {{ productByItem(order.productItem).name }} <br>
+        {{ stringLineFromOrder(order) }}
       </div>
+      <vs-button
+        @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}
+      </vs-button>
+      <vs-input-number
+        min="0"
+        vs-size="medium"
+        label="Текущий заказ"
+        v-model="order.order"></vs-input-number>
+      <vs-input-number
+        min="0"
+        vs-size="medium"
+        label="Остаток"
+        v-model="order.balance"
+        @input="updateRecomSales(index)"
+      ></vs-input-number>
 
-      <vs-table stripe :hoverFlat="true" :data="currentVisit.orders">
-        <template slot="thead">
-        <vs-th>
-          Товар
-        </vs-th>
-        <vs-th>
-          Заказ
-        </vs-th>
-        <vs-th>
-          Остаток
-        </vs-th>
-        <vs-th>
-          Продажи
-        </vs-th>
-        </template>
+      <vs-list>
+        <vs-list-header title="Предыдущие заказы"></vs-list-header>
+        <vs-list-item
+          v-for="(previousOrder, i) in previousOrders[order.productItem]"
+          :key="i"
+          :title="stringLineFromOrder(previousOrder)">
+        </vs-list-item>
+      </vs-list>
+    </vs-collapse-item>
+  </vs-collapse>
 
-        <template slot-scope="{data}">
-        <vs-tr :key="product.productItem" v-for="(product, index) in data" >
-          <vs-td :data="data[index].productItem">
-            {{ productByItem(data[index].productItem).name }}
-          </vs-td>
-          <vs-td :data="data[index].order">
-            <vs-input-number v-model="data[index].order"/>
-            реком. {{ data[index].recommend }}
-          </vs-td>
-          <vs-td :data="data[index].balance">
-            <vs-input-number v-model="data[index].balance"/>
-            <br>
-          </vs-td>
-          <vs-td :data="data[index].sales">
-            {{ data[index].sales }}
-            <br>
-          </vs-td>
-        </vs-tr>
-        </template>
-      </vs-table>
+  </vs-card>
 
-    </vs-card>
-
+<!--    чек-лист для Драфт и Хорека-->
     <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
     || clientByINN(currentVisit.clientINN).clientType === 'Драфт'">
       <div slot="header">
@@ -142,6 +191,7 @@
       </vs-row>
     </vs-card>
 
+<!--    чек-лист для магазина-->
     <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">
       <div slot="header">
         <h2>
@@ -188,6 +238,7 @@
       </vs-row>
     </vs-card>
 
+    <!--загрузка фотографий-->
     <vs-card>
       <div slot="header">
         <h2>
@@ -199,8 +250,11 @@
 
 
     <br>
+    {{ previousOrders }}
     <br>
 
+
+    <!--копки Отменить и Завершить-->
     <vs-row vs-w="12"  vs-type="flex" vs-justify="flex-start">
       <vs-col vs-type="flex" vs-justify="flex-start" vs-align="center" vs-xs="4" vs-lg="4">
         <vs-button @click="resetVisit">Отменить визит</vs-button>
@@ -230,7 +284,7 @@
 
 import {
   VISIT_CLOSE_CURRENT, VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER,
-  VISIT_GET_CURRENT,
+  VISIT_GET_CURRENT, VISIT_GET_HISTORY_BY_INN,
   VISIT_SAVE_CURRENT_TO_VUEX,
 } from '@/store/actions/visits';
 import { GETCLIENTBYINN } from '@/store/actions/clients';
@@ -248,6 +302,9 @@ export default {
     products() {
       return this.$schema.getters[ALL_GOODS];
     },
+    previousVisits() {
+      return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
+    },
   },
   components: {
     ClientPaymentHistory,
@@ -257,6 +314,8 @@ export default {
       currentVisit: {},
       checklist: [],
       timer: '',
+      previousOrders: {},
+      selectedOrder: [],
     };
   },
   created() {
@@ -265,6 +324,16 @@ export default {
     this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);
   },
   mounted() {
+    // this.previousVisits[0].orders.forEach((order) => {
+    //   this.previousOrder[order.productItem] = order;
+    // });
+    while (this.previousVisits === undefined) { console.log('waiting'); }
+    this.previousVisits.forEach((visit) => {
+      visit.orders.forEach((order) => {
+        this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || [];
+        this.previousOrders[order.productItem].push(order);
+      });
+    });
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -303,6 +372,17 @@ export default {
       },
       productByItem(productItem) {
         return this.$store.getters[GOOD_BY_ITEM](productItem);
+      },
+      stringLineFromOrder(order) {
+        return `Заказ: ${order.order} Остаток: ${order.balance} Продажи: ${order.sales}`;
+      },
+      updateRecomSales(orderIndex) {
+        const { productItem } = this.currentVisit.orders[orderIndex];
+        const prevBalance = this.previousOrders[productItem][0].balance;
+        const prevDelivery = this.previousOrders[productItem][0].delivered;
+        // eslint-disable-next-line max-len
+        this.currentVisit.orders[orderIndex].sales = prevBalance + prevDelivery - this.currentVisit.orders[orderIndex].balance;
+        this.currentVisit.orders[orderIndex].recommend = this.currentVisit.orders[orderIndex].sales;
       },
     },
 };
