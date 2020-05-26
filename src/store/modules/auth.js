@@ -4,17 +4,18 @@
 import { HTTP } from '@/utils/http';
 
 import { HIDE_SIDEBAR } from '@/store/actions/UI';
-import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
-import { CLIENTS_REQUEST } from '@/store/actions/clients';
-import { GOODS_REQUEST } from '@/store/actions/goods';
-import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
+// import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
+// import { CLIENTS_REQUEST } from '@/store/actions/clients';
+// import { GOODS_REQUEST } from '@/store/actions/goods';
+// import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
+// import { USER_REQUEST } from '../actions/user';
+import { VISIT_FLASH_ALL } from '@/store/actions/visits';
 import {
   AUTH_REQUEST,
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
 } from '../actions/auth';
-import { USER_REQUEST } from '../actions/user';
 
 const state = {
   token: window.localStorage.getItem('user-token') || '',
@@ -30,22 +31,17 @@ const getters = {
 };
 
 const actions = {
-  [AUTH_REQUEST]: ({ commit, dispatch }, user) => new Promise((resolve, reject) => {
+  [AUTH_REQUEST]: ({ commit }, user) => new Promise((resolve, reject) => {
     commit(AUTH_REQUEST);
     HTTP.post('api-token-auth/', user)
       .then((resp) => {
         window.localStorage.setItem('user-token', resp.data.token);
-        // Here set the header of your ajax library to the token value.
-        // example with axios
-        // alert(`Token ${localStorage.getItem('user-token')}`);
-        // HTTP.defaults.headers.common['Authorization'] =
-        // `Token ${localStorage.getItem('user-token')}`;
         commit(AUTH_SUCCESS, resp);
-        dispatch(USER_REQUEST);
-        dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
-        dispatch(CLIENTS_REQUEST);
-        dispatch(GOODS_REQUEST);
-        dispatch(CHECKLISTS_REQUEST);
+        // dispatch(USER_REQUEST);
+        // dispatch(VISIT_DOWNLOAD_ALL_FROM_SERVER);
+        // dispatch(CLIENTS_REQUEST);
+        // dispatch(GOODS_REQUEST);
+        // dispatch(CHECKLISTS_REQUEST);
         resolve(resp);
       })
       .catch((err) => {
@@ -55,9 +51,11 @@ const actions = {
       });
   }),
   [AUTH_LOGOUT]: ({ commit }) => new Promise((resolve) => {
+    commit(VISIT_FLASH_ALL);
     commit(AUTH_LOGOUT);
     commit(HIDE_SIDEBAR);
-    window.localStorage.removeItem('user-token');
+    window.localStorage.clear();
+    // window.localStorage.removeItem('user-token');
     resolve();
   }),
 };

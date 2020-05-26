@@ -4,24 +4,25 @@ import Vue from 'vue';
 import { USER_REQUEST, USER_ERROR, USER_SUCCESS } from '../actions/user';
 import { AUTH_LOGOUT } from '../actions/auth';
 
-const state = { status: '', profile: {} };
+const state = { status: '', profile: { firstName: '', lastName: '', ID: '' } };
 
 const getters = {
   // eslint-disable-next-line no-shadow
   getProfile: (state) => state.profile,
   // eslint-disable-next-line no-shadow
-  isProfileLoaded: (state) => !!state.profile.firstName,
+  isProfileLoaded: (state) => !!state.profile.id,
   // eslint-disable-next-line no-shadow
   userFirstName: (state) => state.profile.firstName,
   // eslint-disable-next-line no-shadow
   userLastName: (state) => state.profile.lastName,
   // eslint-disable-next-line no-shadow
   userFullName: (state) => `${state.profile.firstName} ${state.profile.lastName}`,
+  userID: (s) => s.profile.ID,
 };
 
 const actions = {
   [USER_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
-    HTTP.get('users')
+    HTTP.get('users/me')
       .then((resp) => {
         commit(USER_SUCCESS, resp.data);
         resolve(resp);

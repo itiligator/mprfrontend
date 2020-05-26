@@ -51,29 +51,3 @@ export const VISIT_WRITE_HISTORY_TO_VUEX_BY_INN = 'VISIT_WRITE_HISTORY_TO_VUEX_B
 // добавляет по ключу-ИНН в объект исторических массивов переданный массив
 
 export const VISIT_FLASH_ALL = 'VISIT_FLASH_ALL'; // обнуляет все данные всех визитов
-
-
-// // геттеры
-// export const VISIT_GET_ALL = 'VISIT_GET_ALL'; // геттер всех имеющихся в хранилище визитов
-// export const VISIT_GET_CURRENT = 'VISIT_GET_CURRENT'; // геттер текущего визита
-// export const VISIT_GET_BY_UUID = 'VISIT_GET_BY_UUID'; // геттер визита по UUID
-// export const VISIT_IS_CURRENT = 'VISIT_IS_CURRENT'; // геттер наличия текущего визита
-//
-// // действия
-// // загрузки с сервера
-// export const VISIT_DOWNLOAD_ALL_FROM_SERVER = 'VISIT_DOWNLOAD_ALL_FROM_SERVER'; // получение всех запланированных и оконченных сегодня визитов с сервера
-// export const VISIT_DOWNLOAD_PLANNED_FROM_SERVER = 'VISIT_DOWNLOAD_PLANNED_FROM_SERVER'; // получение всех запланированных визитов с сервера
-// export const VISIT_DOWNLOAD_FINISHED_TODAY_FROM_SERVER = 'VISIT_DOWNLOAD_FINISHED_TODAY_FROM_SERVER'; // получение всех оконченных сегодня визитов с сервера
-// export const VISIT_DOWNLOAD_CLIENT_HISTORY_FROM_SERVER = 'VISIT_DOWNLOAD_CLIENT_HISTORY_FROM_SERVER'; // получениепо ИНН клиента последних трех завершенных и обработанных 1С визитов
-// // отправки на сервер
-// export const VISIT_UPLOAD_CURRENT_TO_SERVER = 'VISIT_UPLOAD_CURRENT_TO_SERVER'; // отправка данных текущего визита на сервер
-// // запись в хранилище
-// export const VISIT_SAVE_CURRENT_TOVUEX = 'VISIT_SAVE_CURRENT_TOVUEX'; // сохранение данных текущего визита в хранилище
-//
-//
-// // мутации
-// export const VISIT_ERROR = 'VISIT_ERROR'; // пишет 'error' в  state.status
-// export const VISIT_WRITE_DATA_TO_STORE = 'VISIT_WRITE_DATA_TO_STORE'; // обновляет хранящиеся визиты переданными данными
-// export const VISIT_UPDATE_CURRENT_IN_VUEX = 'VISIT_UPDATE_CURRENT_IN_VUEX'; // перезаписывает текущий визит переданными данными
-// export const VISIT_PUSH_CURRENT_TO_ALL = 'VISIT_PUSH_CURRENT_TO_ALL'; // записывает данные текущего визита в хранилище всех визитов
-// export const VISIT_UPDATE_BY_INDEX = 'VISIT_UPDATE_BY_INDEX'; // перезаписывает переданные данные визита по индексу в хранилище всех массивов

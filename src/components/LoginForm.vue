@@ -2,6 +2,7 @@
   <div>
     <form class="login" @submit.prevent="login">
       <h1>Авторизация</h1>
+      <br>
       <label>Имя пользователя</label>
       <input required v-model="username" type="text" placeholder="Snoopy" />
       <label>Пароль</label>
@@ -12,6 +13,7 @@
         placeholder="Password"
       />
       <p></p>
+      <br>
       <button type="submit">Войти</button>
     </form>
   </div>

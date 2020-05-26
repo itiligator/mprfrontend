@@ -23,56 +23,12 @@
         v-model.number="currentVisit.payment"/>
       <br>
       <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>
+      <vs-switch v-model="currentVisit.dataBase">
+        <span slot="on" style="font-size:16px">ПБК</span>
+        <span slot="off" style="font-size:16px">Тест</span>
+      </vs-switch>
 
     </vs-card>
-
-<!--    заказ в виде таблицы-->
-<!--    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">-->
-<!--      <div slot="header">-->
-<!--        <h2>-->
-<!--          Заказ-->
-<!--        </h2>-->
-<!--      </div>-->
-
-<!--      <vs-table :data="currentVisit.orders" v-model="selectedOrder">-->
-<!--        <template slot="thead">-->
-<!--        <vs-th>-->
-<!--          Товар-->
-<!--        </vs-th>-->
-<!--        <vs-th>-->
-<!--          Заказ-->
-<!--        </vs-th>-->
-<!--        <vs-th>-->
-<!--          Остаток-->
-<!--        </vs-th>-->
-<!--        <vs-th>-->
-<!--          Продажи-->
-<!--        </vs-th>-->
-<!--        </template>-->
-
-<!--        <template slot-scope="{data}">-->
-<!--        <vs-tr :key="product.productItem" :data="product" v-for="(product, index) in data" >-->
-<!--          <vs-td :data="data[index].productItem">-->
-<!--            {{ productByItem(data[index].productItem).name }}-->
-<!--          </vs-td>-->
-<!--          <vs-td :data="data[index].order">-->
-<!--            <vs-input-number v-model="data[index].order"/>-->
-<!--            реком. {{ data[index].recommend }}-->
-<!--          </vs-td>-->
-<!--          <vs-td :data="data[index].balance">-->
-<!--            <vs-input-number v-model="data[index].balance"/>-->
-<!--            <br>-->
-<!--          </vs-td>-->
-<!--          <vs-td :data="data[index].sales">-->
-<!--            {{ data[index].sales }}-->
-<!--            <br>-->
-<!--          </vs-td>-->
-<!--        </vs-tr>-->
-<!--        </template>-->
-<!--      </vs-table>-->
-
-<!--    </vs-card>-->
-
 
 <!--    заказ в виде списка-->
         <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
@@ -248,9 +204,6 @@
       <vs-upload/>
     </vs-card>
 
-
-    <br>
-    {{ previousOrders }}
     <br>
 
 
@@ -283,7 +236,7 @@
 
 
 import {
-  VISIT_CLOSE_CURRENT, VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER,
+  VISIT_CLOSE_CURRENT,
   VISIT_GET_CURRENT, VISIT_GET_HISTORY_BY_INN,
   VISIT_SAVE_CURRENT_TO_VUEX,
 } from '@/store/actions/visits';
@@ -316,24 +269,28 @@ export default {
       timer: '',
       previousOrders: {},
       selectedOrder: [],
+      // previousVisits: [],
     };
   },
   created() {
     this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
     this.checklist = JSON.parse(JSON.stringify(this.$store.getters[CHECKLIST_GET_CURRENT]));
-    this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);
+    // this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);
+  },
+  watch: {
+    previousVisits() {
+      this.preparePreviousOrders();
+    },
   },
   mounted() {
     // this.previousVisits[0].orders.forEach((order) => {
     //   this.previousOrder[order.productItem] = order;
     // });
-    while (this.previousVisits === undefined) { console.log('waiting'); }
-    this.previousVisits.forEach((visit) => {
-      visit.orders.forEach((order) => {
-        this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || [];
-        this.previousOrders[order.productItem].push(order);
-      });
-    });
+    // eslint-disable-next-line max-len
+    // this.previousVisits = this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
+    if (this.previousVisits !== undefined) {
+      this.preparePreviousOrders();
+    }
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -354,17 +311,11 @@ export default {
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       finishVisit() {
+        this.$store.dispatch(VISIT_CLOSE_CURRENT);
         this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
         this.$store.dispatch(CHECKLIST_UPLOAD_CURRENT_TO_SERVER);
-        // this.currentVisit.status = 2;
-        // this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
-        // this.$store.dispatch(VISIT_UPLOAD_CURRENT_TO_SERVER);
-        // this.$store.dispatch(VISIT_PUSH_CURRENT_TO_ALL);
-        this.$store.dispatch(VISIT_CLOSE_CURRENT);
-        this.checklist = [];
         this.$store.dispatch(CHECKLIST_RESET_CURRENT);
-        // this.currentVisit = {};
-        // this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
+        this.checklist = [];
         this.$router.push('/route');
       },
       clientByINN(inn) {
@@ -383,6 +334,15 @@ export default {
         // eslint-disable-next-line max-len
         this.currentVisit.orders[orderIndex].sales = prevBalance + prevDelivery - this.currentVisit.orders[orderIndex].balance;
         this.currentVisit.orders[orderIndex].recommend = this.currentVisit.orders[orderIndex].sales;
+      },
+      preparePreviousOrders() {
+        this.previousOrders = [];
+        this.previousVisits.forEach((visit) => {
+          visit.orders.forEach((order) => {
+            this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || [];
+            this.previousOrders[order.productItem].push(order);
+          });
+        });
       },
     },
 };

@@ -195,7 +195,7 @@
 
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 import {
-  VISIT_DOWNLOAD_ALL_FROM_SERVER,
+  VISIT_DOWNLOAD_ALL_FROM_SERVER, VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER,
   VISIT_GET_CURRENT, VISIT_GET_FINISHED, VISIT_GET_PLANNED,
   VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TO_VUEX,
 } from '@/store/actions/visits';
@@ -251,6 +251,7 @@ export default {
         return this.$store.getters[GETCLIENTBYINN](inn);
       },
       startVisitFromPlanned(visitData) {
+        this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, visitData.clientINN);
         const orders = this.products.map((p) => ({
           productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
         }));
