@@ -5,206 +5,378 @@
     <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
     <br>
 
-<!--    панелька оплаты для Драфт и Хорека-->
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
-      <div slot="header">
-        <h2>
-          Оплата
-        </h2>
-      </div>
-      Планируемая оплата: {{ currentVisit.paymentPlan }}
-      <br>
-      Лимит: {{ clientByINN(currentVisit.clientINN).limit }}
-      <br>
-      Отсрочка платежа: {{ clientByINN(currentVisit.clientINN).delay }}
-      <vs-input
-        type="number"
-        label-placeholder="Сумма оплаты"
-        v-model.number="currentVisit.payment"/>
-      <br>
-      <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>
-      <vs-switch v-model="currentVisit.dataBase">
-        <span slot="on" style="font-size:16px">ПБК</span>
-        <span slot="off" style="font-size:16px">Тест</span>
-      </vs-switch>
+    <vs-tabs alignment="center">
+      <vs-tab label="Оплата" v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+        Планируемая оплата: {{ currentVisit.paymentPlan }}
+        <br>
+        Лимит: {{ clientByINN(currentVisit.clientINN).limit }}
+        <br>
+        Отсрочка платежа: {{ clientByINN(currentVisit.clientINN).delay }}
+        <vs-input
+          type="number"
+          label-placeholder="Сумма оплаты"
+          v-model.number="currentVisit.payment"/>
+        <br>
+        <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>
+        <vs-switch v-model="currentVisit.dataBase">
+          <span slot="on" style="font-size:16px">ПБК</span>
+          <span slot="off" style="font-size:16px">Тест</span>
+        </vs-switch>
+      </vs-tab>
+      <vs-tab label="Заказ" v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+        <vs-collapse>
+          <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
+            <div slot="header">
+              {{ productByItem(order.productItem).name }} <br>
+              {{ stringLineFromOrder(order) }}
+            </div>
+            <vs-button
+              @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}
+            </vs-button>
+            <vs-input-number
+              min="0"
+              vs-size="medium"
+              label="Текущий заказ"
+              v-model="order.order"></vs-input-number>
+            <vs-input-number
+              min="0"
+              vs-size="medium"
+              label="Остаток"
+              v-model="order.balance"
+              @input="updateRecomSales(index)"
+            ></vs-input-number>
 
-    </vs-card>
+            <vs-list>
+              <vs-list-header title="Предыдущие заказы"></vs-list-header>
+              <vs-list-item
+                v-for="(previousOrder, i) in previousOrders[order.productItem]"
+                :key="i"
+                :title="stringLineFromOrder(previousOrder)">
+              </vs-list-item>
+            </vs-list>
+          </vs-collapse-item>
+        </vs-collapse>
 
-<!--    заказ в виде списка-->
-        <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
-          <div slot="header">
-            <h2>
-              Заказ
-            </h2>
-          </div>
-  <vs-collapse>
-    <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
-      <div slot="header">
-        {{ productByItem(order.productItem).name }} <br>
-        {{ stringLineFromOrder(order) }}
-      </div>
-      <vs-button
-        @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}
-      </vs-button>
-      <vs-input-number
-        min="0"
-        vs-size="medium"
-        label="Текущий заказ"
-        v-model="order.order"></vs-input-number>
-      <vs-input-number
-        min="0"
-        vs-size="medium"
-        label="Остаток"
-        v-model="order.balance"
-        @input="updateRecomSales(index)"
-      ></vs-input-number>
-
-      <vs-list>
-        <vs-list-header title="Предыдущие заказы"></vs-list-header>
-        <vs-list-item
-          v-for="(previousOrder, i) in previousOrders[order.productItem]"
-          :key="i"
-          :title="stringLineFromOrder(previousOrder)">
-        </vs-list-item>
-      </vs-list>
-    </vs-collapse-item>
-  </vs-collapse>
-
-  </vs-card>
-
-<!--    чек-лист для Драфт и Хорека-->
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
+      </vs-tab>
+      <vs-tab label="Чеклист">
+        <!--    чек-лист для Драфт и Хорека-->
+        <div v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
     || clientByINN(currentVisit.clientINN).clientType === 'Драфт'">
-      <div slot="header">
-        <h2>
-          Чек-лист
-        </h2>
-      </div>
-      <vs-row>
-        <vs-col vs-w="12">
-      <vs-table stripe :hoverFlat="true"
-                :data="checklist.filter((q) => q.section === 'Цены' )"
-                noDataText="Вопросы в чеклисте отсутствуют">
-        <template slot="thead">
-        <vs-th>
-          Сорт пива
-        </vs-th>
-        <vs-th>
-          Цена
-        </vs-th>
-        <vs-th>
-          Остаток
-        </vs-th>
-        </template>
+          <vs-row>
+            <vs-col vs-w="12">
+              <vs-table stripe :hoverFlat="true"
+                        :data="checklist.filter((q) => q.section === 'Цены' )"
+                        noDataText="Вопросы в чеклисте отсутствуют">
+                <template slot="thead">
+                <vs-th>
+                  Сорт пива
+                </vs-th>
+                <vs-th>
+                  Цена
+                </vs-th>
+                <vs-th>
+                  Остаток
+                </vs-th>
+                </template>
 
-        <template slot-scope="{data}">
-        <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+                <template slot-scope="{data}">
+                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
 
-          <vs-td :data="question.text">
-            {{ question.text }}
-          </vs-td>
+                  <vs-td :data="question.text">
+                    {{ question.text }}
+                  </vs-td>
 
-          <vs-td :data="data[index].answer1">
-            <vs-input v-model="data[index].answer1"/>
-          </vs-td>
+                  <vs-td :data="data[index].answer1">
+                    <vs-input v-model="data[index].answer1"/>
+                  </vs-td>
 
-          <vs-td :data="data[index].answer2">
-            <vs-input v-model="data[index].answer2"/>
-          </vs-td>
+                  <vs-td :data="data[index].answer2">
+                    <vs-input v-model="data[index].answer2"/>
+                  </vs-td>
 
-        </vs-tr>
-        </template>
+                </vs-tr>
+                </template>
 
-      </vs-table>
-      <vs-table stripe :hoverFlat="true"
-                :data="checklist.filter((q) => q.section === 'Кеги' )"
-                noDataText="Вопросы в чеклисте отсутствуют">
-        <template slot="thead">
-        <vs-th>
-          Вопросы
-        </vs-th>
-        <vs-th>
-          Ответы
-        </vs-th>
-        </template>
+              </vs-table>
+              <vs-table stripe :hoverFlat="true"
+                        :data="checklist.filter((q) => q.section === 'Кеги' )"
+                        noDataText="Вопросы в чеклисте отсутствуют">
+                <template slot="thead">
+                <vs-th>
+                  Вопросы
+                </vs-th>
+                <vs-th>
+                  Ответы
+                </vs-th>
+                </template>
 
-        <template slot-scope="{data}">
-        <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+                <template slot-scope="{data}">
+                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
 
-          <vs-td :data="question.text">
-            {{ question.text }}
-          </vs-td>
+                  <vs-td :data="question.text">
+                    {{ question.text }}
+                  </vs-td>
 
-          <vs-td :data="data[index].answer1">
-            <vs-input v-model="data[index].answer1"/>
-          </vs-td>
+                  <vs-td :data="data[index].answer1">
+                    <vs-input v-model="data[index].answer1"/>
+                  </vs-td>
 
-        </vs-tr>
-        </template>
+                </vs-tr>
+                </template>
 
-      </vs-table>
-        </vs-col>
-      </vs-row>
-    </vs-card>
+              </vs-table>
+            </vs-col>
+          </vs-row>
+        </div>
 
-<!--    чек-лист для магазина-->
-    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">
-      <div slot="header">
-        <h2>
-          Чек-лист
-        </h2>
-      </div>
-      <vs-row>
-        <vs-col vs-w="12">
-          <vs-table stripe :hoverFlat="true"
-                    :data="checklist.filter((q) => q.section === 'Общий' )"
-                    noDataText="Вопросы в чеклисте отсутствуют">
-            <template slot="thead">
-            <vs-th>
-              Мероприятия
-            </vs-th>
-            <vs-th>
-              Отметка провер.
-            </vs-th>
-            <vs-th>
-              Примечание
-            </vs-th>
-            </template>
+        <!--    чек-лист для магазина-->
+        <div v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">
+          <vs-row>
+            <vs-col vs-w="12">
+              <vs-table stripe :hoverFlat="true"
+                        :data="checklist.filter((q) => q.section === 'Общий' )"
+                        noDataText="Вопросы в чеклисте отсутствуют">
+                <template slot="thead">
+                <vs-th>
+                  Мероприятия
+                </vs-th>
+                <vs-th>
+                  Отметка провер.
+                </vs-th>
+                <vs-th>
+                  Примечание
+                </vs-th>
+                </template>
 
-            <template slot-scope="{data}">
-            <vs-tr :key="question.UUID" v-for="(question, index) in data" >
+                <template slot-scope="{data}">
+                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
 
-              <vs-td :data="question.text">
-                {{ question.text }}
-              </vs-td>
+                  <vs-td :data="question.text">
+                    {{ question.text }}
+                  </vs-td>
 
-              <vs-td :data="data[index].answer1">
-                <vs-switch v-model="data[index].answer1"></vs-switch>
-              </vs-td>
+                  <vs-td :data="data[index].answer1">
+                    <vs-switch v-model="data[index].answer1"></vs-switch>
+                  </vs-td>
 
-              <vs-td :data="data[index].answer2">
-                <vs-input v-model="data[index].answer2"/>
-              </vs-td>
+                  <vs-td :data="data[index].answer2">
+                    <vs-input v-model="data[index].answer2"/>
+                  </vs-td>
 
-            </vs-tr>
-            </template>
+                </vs-tr>
+                </template>
 
-          </vs-table>
-        </vs-col>
-      </vs-row>
-    </vs-card>
+              </vs-table>
+            </vs-col>
+          </vs-row>
+        </div>
+      </vs-tab>
+      <vs-tab label="Фото">
+        <vs-upload/>
+      </vs-tab>
+    </vs-tabs>
 
-    <!--загрузка фотографий-->
-    <vs-card>
-      <div slot="header">
-        <h2>
-          Загрузить фото
-        </h2>
-      </div>
-      <vs-upload/>
-    </vs-card>
 
-    <br>
+<!--&lt;!&ndash;    панелька оплаты для Драфт и Хорека&ndash;&gt;-->
+<!--    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Оплата-->
+<!--        </h2>-->
+<!--      </div>-->
+<!--      Планируемая оплата: {{ currentVisit.paymentPlan }}-->
+<!--      <br>-->
+<!--      Лимит: {{ clientByINN(currentVisit.clientINN).limit }}-->
+<!--      <br>-->
+<!--      Отсрочка платежа: {{ clientByINN(currentVisit.clientINN).delay }}-->
+<!--      <vs-input-->
+<!--        type="number"-->
+<!--        label-placeholder="Сумма оплаты"-->
+<!--        v-model.number="currentVisit.payment"/>-->
+<!--      <br>-->
+<!--      <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>-->
+<!--      <vs-switch v-model="currentVisit.dataBase">-->
+<!--        <span slot="on" style="font-size:16px">ПБК</span>-->
+<!--        <span slot="off" style="font-size:16px">Тест</span>-->
+<!--      </vs-switch>-->
+
+<!--    </vs-card>-->
+
+<!--&lt;!&ndash;    заказ в виде списка&ndash;&gt;-->
+<!--        <vs-card v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">-->
+<!--          <div slot="header">-->
+<!--            <h2>-->
+<!--              Заказ-->
+<!--            </h2>-->
+<!--          </div>-->
+<!--  <vs-collapse>-->
+<!--    <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">-->
+<!--      <div slot="header">-->
+<!--        {{ productByItem(order.productItem).name }} <br>-->
+<!--        {{ stringLineFromOrder(order) }}-->
+<!--      </div>-->
+<!--      <vs-button-->
+<!--        @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}-->
+<!--      </vs-button>-->
+<!--      <vs-input-number-->
+<!--        min="0"-->
+<!--        vs-size="medium"-->
+<!--        label="Текущий заказ"-->
+<!--        v-model="order.order"></vs-input-number>-->
+<!--      <vs-input-number-->
+<!--        min="0"-->
+<!--        vs-size="medium"-->
+<!--        label="Остаток"-->
+<!--        v-model="order.balance"-->
+<!--        @input="updateRecomSales(index)"-->
+<!--      ></vs-input-number>-->
+
+<!--      <vs-list>-->
+<!--        <vs-list-header title="Предыдущие заказы"></vs-list-header>-->
+<!--        <vs-list-item-->
+<!--          v-for="(previousOrder, i) in previousOrders[order.productItem]"-->
+<!--          :key="i"-->
+<!--          :title="stringLineFromOrder(previousOrder)">-->
+<!--        </vs-list-item>-->
+<!--      </vs-list>-->
+<!--    </vs-collapse-item>-->
+<!--  </vs-collapse>-->
+
+<!--  </vs-card>-->
+
+<!--&lt;!&ndash;    чек-лист для Драфт и Хорека&ndash;&gt;-->
+<!--    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'-->
+<!--    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'">-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Чек-лист-->
+<!--        </h2>-->
+<!--      </div>-->
+<!--      <vs-row>-->
+<!--        <vs-col vs-w="12">-->
+<!--      <vs-table stripe :hoverFlat="true"-->
+<!--                :data="checklist.filter((q) => q.section === 'Цены' )"-->
+<!--                noDataText="Вопросы в чеклисте отсутствуют">-->
+<!--        <template slot="thead">-->
+<!--        <vs-th>-->
+<!--          Сорт пива-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Цена-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Остаток-->
+<!--        </vs-th>-->
+<!--        </template>-->
+
+<!--        <template slot-scope="{data}">-->
+<!--        <vs-tr :key="question.UUID" v-for="(question, index) in data" >-->
+
+<!--          <vs-td :data="question.text">-->
+<!--            {{ question.text }}-->
+<!--          </vs-td>-->
+
+<!--          <vs-td :data="data[index].answer1">-->
+<!--            <vs-input v-model="data[index].answer1"/>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td :data="data[index].answer2">-->
+<!--            <vs-input v-model="data[index].answer2"/>-->
+<!--          </vs-td>-->
+
+<!--        </vs-tr>-->
+<!--        </template>-->
+
+<!--      </vs-table>-->
+<!--      <vs-table stripe :hoverFlat="true"-->
+<!--                :data="checklist.filter((q) => q.section === 'Кеги' )"-->
+<!--                noDataText="Вопросы в чеклисте отсутствуют">-->
+<!--        <template slot="thead">-->
+<!--        <vs-th>-->
+<!--          Вопросы-->
+<!--        </vs-th>-->
+<!--        <vs-th>-->
+<!--          Ответы-->
+<!--        </vs-th>-->
+<!--        </template>-->
+
+<!--        <template slot-scope="{data}">-->
+<!--        <vs-tr :key="question.UUID" v-for="(question, index) in data" >-->
+
+<!--          <vs-td :data="question.text">-->
+<!--            {{ question.text }}-->
+<!--          </vs-td>-->
+
+<!--          <vs-td :data="data[index].answer1">-->
+<!--            <vs-input v-model="data[index].answer1"/>-->
+<!--          </vs-td>-->
+
+<!--        </vs-tr>-->
+<!--        </template>-->
+
+<!--      </vs-table>-->
+<!--        </vs-col>-->
+<!--      </vs-row>-->
+<!--    </vs-card>-->
+
+<!--&lt;!&ndash;    чек-лист для магазина&ndash;&gt;-->
+<!--    <vs-card v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Чек-лист-->
+<!--        </h2>-->
+<!--      </div>-->
+<!--      <vs-row>-->
+<!--        <vs-col vs-w="12">-->
+<!--          <vs-table stripe :hoverFlat="true"-->
+<!--                    :data="checklist.filter((q) => q.section === 'Общий' )"-->
+<!--                    noDataText="Вопросы в чеклисте отсутствуют">-->
+<!--            <template slot="thead">-->
+<!--            <vs-th>-->
+<!--              Мероприятия-->
+<!--            </vs-th>-->
+<!--            <vs-th>-->
+<!--              Отметка провер.-->
+<!--            </vs-th>-->
+<!--            <vs-th>-->
+<!--              Примечание-->
+<!--            </vs-th>-->
+<!--            </template>-->
+
+<!--            <template slot-scope="{data}">-->
+<!--            <vs-tr :key="question.UUID" v-for="(question, index) in data" >-->
+
+<!--              <vs-td :data="question.text">-->
+<!--                {{ question.text }}-->
+<!--              </vs-td>-->
+
+<!--              <vs-td :data="data[index].answer1">-->
+<!--                <vs-switch v-model="data[index].answer1"></vs-switch>-->
+<!--              </vs-td>-->
+
+<!--              <vs-td :data="data[index].answer2">-->
+<!--                <vs-input v-model="data[index].answer2"/>-->
+<!--              </vs-td>-->
+
+<!--            </vs-tr>-->
+<!--            </template>-->
+
+<!--          </vs-table>-->
+<!--        </vs-col>-->
+<!--      </vs-row>-->
+<!--    </vs-card>-->
+
+<!--    &lt;!&ndash;загрузка фотографий&ndash;&gt;-->
+<!--    <vs-card>-->
+<!--      <div slot="header">-->
+<!--        <h2>-->
+<!--          Загрузить фото-->
+<!--        </h2>-->
+<!--      </div>-->
+<!--      <vs-upload/>-->
+<!--    </vs-card>-->
+
+<!--    <br>-->
 
 
     <!--копки Отменить и Завершить-->
@@ -350,4 +522,5 @@ export default {
 
 <style scoped>
   .fixed-row-bottom { position: fixed; bottom: 0; z-index: 999;}
+  .button.vs-tabs--btn {font-size: 20px}
 </style>
