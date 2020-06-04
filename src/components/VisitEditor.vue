@@ -172,7 +172,15 @@
         </div>
       </vs-tab>
       <vs-tab label="Фото">
-        <vs-upload/>
+        <vs-upload
+          multiple
+          single-upload
+          fileName="image"
+          :headers="authHeader"
+          :action="photoUploadUrl"
+          automatic
+          :accept="['JPG','jpg']"
+        />
       </vs-tab>
     </vs-tabs>
 
@@ -420,6 +428,7 @@ import {
   CHECKLIST_SAVE_CURRENT, CHECKLIST_UPLOAD_CURRENT_TO_SERVER,
 } from '@/store/actions/checklists';
 import ClientPaymentHistory from '@/components/ClientPaymentHistory.vue';
+import { HTTP } from '@/utils/http';
 
 export default {
   name: 'VisitEditor',
@@ -429,6 +438,9 @@ export default {
     },
     previousVisits() {
       return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
+    },
+    photoUploadUrl() {
+      return `${HTTP.defaults.baseURL}photos/${this.currentVisit.UUID}`;
     },
   },
   components: {
@@ -442,6 +454,7 @@ export default {
       previousOrders: {},
       selectedOrder: [],
       // previousVisits: [],
+      authHeader: { Authorization: 'Token' },
     };
   },
   created() {
@@ -460,6 +473,8 @@ export default {
     // });
     // eslint-disable-next-line max-len
     // this.previousVisits = this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
+    const token = localStorage.getItem('user-token');
+    this.authHeader.Authorization = `Token ${token}`;
     if (this.previousVisits !== undefined) {
       this.preparePreviousOrders();
     }
