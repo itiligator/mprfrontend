@@ -30,10 +30,10 @@ const initialCurrentVisit = {
   orders: null,
   payment: null,
   date: null,
-  dataBase: true,
+  dataBase: null,
   clientINN: null,
-  processed: false,
-  invoice: false,
+  processed: null,
+  invoice: null,
   status: 0,
   managerID: null,
   author: null,
@@ -105,8 +105,9 @@ const actions = {
     },
   [VISIT_UPLOAD_CURRENT_TO_SERVER]:
     (s) => new Promise((resolve, reject) => {
-      const currentVisit = s.getters[VISIT_GET_CURRENT];
-      HTTP.put(`visits/${currentVisit.UUID}`, currentVisit)
+      const cV = s.getters[VISIT_GET_CURRENT];
+      Object.keys(cV).forEach((key) => (cV[key] == null) && delete cV[key]);
+      HTTP.put(`visits/${cV.UUID}`, cV)
         .then((resp) => {
           resolve(resp);
         })
@@ -116,9 +117,10 @@ const actions = {
         });
     }),
   [VISIT_CLOSE_CURRENT]: (s) => new Promise((resolve, reject) => {
-    const currentVisit = JSON.parse(JSON.stringify(s.getters[VISIT_GET_CURRENT]));
-    currentVisit.status = 2;
-    HTTP.put(`visits/${currentVisit.UUID}`, currentVisit)
+    const cV = JSON.parse(JSON.stringify(s.getters[VISIT_GET_CURRENT]));
+    cV.status = 2;
+    Object.keys(cV).forEach((key) => (cV[key] == null) && delete cV[key]);
+    HTTP.put(`visits/${cV.UUID}`, cV)
       .then((resp) => {
         s.commit(VISIT_CLOSE_AND_REPLACE_CURRENT);
         resolve(resp);
