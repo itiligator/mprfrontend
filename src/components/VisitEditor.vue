@@ -28,7 +28,7 @@
           <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
             <div slot="header">
               {{ productByItem(order.productItem).name }} <br>
-              {{ stringLineFromOrder(order) }}
+              <!-- {{ stringLineFromOrder(order) }} -->
             </div>
             <vs-button
               @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}
@@ -49,9 +49,10 @@
             <vs-list>
               <vs-list-header title="Предыдущие заказы"></vs-list-header>
               <vs-list-item
-                v-for="(previousOrder, i) in previousOrders[order.productItem]"
-                :key="i"
-                :title="stringLineFromOrder(previousOrder)">
+                v-for="(previousOrder, date) in previousOrders[order.productItem]"
+                :key="previousOrder.id"
+                :title="date">
+                {{ stringLineFromOrder(previousOrder) }}
               </vs-list-item>
             </vs-list>
           </vs-collapse-item>
@@ -452,6 +453,7 @@ export default {
       checklist: [],
       timer: '',
       previousOrders: {},
+      veryLastVisitDate: '',
       selectedOrder: [],
       // previousVisits: [],
       authHeader: { Authorization: 'Token' },
@@ -512,22 +514,24 @@ export default {
         return this.$store.getters[GOOD_BY_ITEM](productItem);
       },
       stringLineFromOrder(order) {
-        return `Заказ: ${order.order} Остаток: ${order.balance} Продажи: ${order.sales}`;
+        return `Заказ: ${order.order} Доставлено: ${order.delivered} Остаток: ${order.balance} Продажи: ${order.sales}`;
       },
       updateRecomSales(orderIndex) {
         const { productItem } = this.currentVisit.orders[orderIndex];
-        const prevBalance = this.previousOrders[productItem][0].balance;
-        const prevDelivery = this.previousOrders[productItem][0].delivered;
+        const prevBalance = this.previousOrders[productItem][this.veryLastVisitDate].balance;
+        const prevDelivery = this.previousOrders[productItem][this.veryLastVisitDate].delivered;
         // eslint-disable-next-line max-len
         this.currentVisit.orders[orderIndex].sales = prevBalance + prevDelivery - this.currentVisit.orders[orderIndex].balance;
         this.currentVisit.orders[orderIndex].recommend = this.currentVisit.orders[orderIndex].sales;
       },
       preparePreviousOrders() {
-        this.previousOrders = [];
+        this.previousOrders = {};
         this.previousVisits.forEach((visit) => {
           visit.orders.forEach((order) => {
-            this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || [];
-            this.previousOrders[order.productItem].push(order);
+            this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || {};
+            /* this.previousOrders[order.productItem].push(order); */
+            this.previousOrders[order.productItem][visit.date] = order;
+            this.veryLastVisitDate = visit.date;
           });
         });
       },

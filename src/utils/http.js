@@ -24,7 +24,7 @@ const successHandler = (response) => {
 
 // eslint-disable-next-line import/prefer-default-export
 export const HTTP = axios.create({
-  baseURL: 'https://rhzc.ru',
+  baseURL: 'https://rhzc.ru/api',
   timeout: 10000,
   headers: (token === null) ? {} : { Authorization: `Token ${token}` },
 });
