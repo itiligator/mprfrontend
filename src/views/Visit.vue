@@ -5,7 +5,7 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-w="9">
-      <h2>Визит</h2>
+      <h2>Визит: {{visitingClientName}}</h2>
     </vs-col>
   </vs-row>
   <vs-row vs-type="flex" vs-justify="center" vs-align="center">
@@ -23,7 +23,8 @@
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 import VisitEditor from '@/components/VisitEditor.vue';
 import VisitCreatePanel from '@/components/VisitCreatePanel.vue';
-import { VISIT_IS_CURRENT } from '@/store/actions/visits';
+import { VISIT_IS_CURRENT, VISIT_GET_CURRENT } from '@/store/actions/visits';
+import { GETCLIENTBYINN } from '@/store/actions/clients';
 
 export default {
   name: 'Visit',
@@ -35,11 +36,21 @@ export default {
     isCurrentVisit() {
       return this.$store.getters[VISIT_IS_CURRENT];
     },
+    visitingClientName() {
+      if (this.isCurrentVisit) {
+        const cV = this.$store.getters[VISIT_GET_CURRENT];
+        return this.clientByINN(cV.clientINN);
+      }
+      return '';
+    },
   },
   methods:
     {
       toggleSidebar() {
         this.$store.dispatch(TOGGLE_SIDEBAR);
+      },
+      clientByINN(inn) {
+        return this.$store.getters[GETCLIENTBYINN](inn).name;
       },
     },
 };

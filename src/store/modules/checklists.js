@@ -23,7 +23,7 @@ const getters = {
 
 const actions = {
   [CHECKLISTS_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
-    HTTP.get('/checklistsquestions')
+    HTTP.get('/checklistsquestions?active=true')
       .then((resp) => {
         commit(CHECKLISTS_SUCCESS, resp);
         resolve(resp);
