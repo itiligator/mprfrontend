@@ -2,8 +2,6 @@
   <div v-if="!!currentVisit.UUID">
 
 <!--    заголовок страницы-->
-    <h1>Визит: {{ clientByINN(currentVisit.clientINN).name }}</h1>
-    <br>
 
     <vs-tabs alignment="center">
       <vs-tab label="Оплата" v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">

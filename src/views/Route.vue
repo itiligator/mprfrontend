@@ -6,7 +6,7 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-w="9">
-      <h2>МПР | Маршрут </h2>
+      <h2>Маршрут </h2>
     </vs-col>
   </vs-row>
 

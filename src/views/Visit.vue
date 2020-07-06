@@ -1,14 +1,15 @@
 <template>
 <div>
   <vs-row vs-w="12"  vs-type="flex" vs-justify="flex-start">
-    <vs-col vs-type="flex" vs-justify="flex-start" vs-align="center" vs-xs="6" vs-lg="6">
+    <vs-col vs-type="flex" vs-justify="flex-start" vs-align="center" vs-xs="2" vs-lg="2">
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
-    <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="6" vs-lg="6">
+    <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-w="9">
+      <h2>Визит</h2>
     </vs-col>
   </vs-row>
   <vs-row vs-type="flex" vs-justify="center" vs-align="center">
-    <vs-col vs-w="11">
+    <vs-col vs-w="12">
       <VisitEditor v-if='isCurrentVisit'></VisitEditor>
       <VisitCreatePanel v-else></VisitCreatePanel>
     </vs-col>
