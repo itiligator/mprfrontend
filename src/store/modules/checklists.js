@@ -64,7 +64,15 @@ const actions = {
 const mutations = {
   // eslint-disable-next-line no-shadow
   [CHECKLISTS_SUCCESS]: (state, resp) => {
-    state.checklists = resp.data;
+    state.checklists = resp.data.sort((a, b) => {
+      if (a.text > b.text) {
+        return 1;
+      }
+      if (a.text < b.text) {
+        return -1;
+      }
+      return 0;
+    });
     state.checklistsState = true;
   },
   // eslint-disable-next-line no-shadow
