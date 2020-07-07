@@ -61,7 +61,7 @@ export default {
     login() {
       const { username, password } = this;
       this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
-        window.location.replace('/');
+        window.location.replace('/route');
       });
     },
   },
