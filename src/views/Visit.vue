@@ -28,6 +28,9 @@ import { GETCLIENTBYINN } from '@/store/actions/clients';
 
 export default {
   name: 'Visit',
+  metaInfo: {
+    title: 'МПР | Визит',
+  },
   components: {
     VisitEditor,
     VisitCreatePanel,
