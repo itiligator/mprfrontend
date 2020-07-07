@@ -171,7 +171,6 @@
 
                 </vs-tr>
                 </template>
-
               </vs-table>
             </vs-col>
           </vs-row>
@@ -350,7 +349,7 @@ export default {
         });
       },
       formatDeliveryDate() {
-        if (this.currentVisit.deliveryDate !== null) {
+        if ((this.currentVisit.deliveryDate || null) !== null) {
           this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);
         }
       },
