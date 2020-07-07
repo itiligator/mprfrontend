@@ -291,7 +291,6 @@ export default {
     if (this.previousVisits !== undefined) {
       this.preparePreviousOrders();
     }
-    this.currentVisit.deliveryDate = new Date();
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -312,6 +311,7 @@ export default {
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       finishVisit() {
+        this.currentVisit.date = new Date().toISOString().slice(0, 10);
         this.formatDeliveryDate();
         this.saveCurrentVisitToVuex();
         this.$store.dispatch(VISIT_CLOSE_CURRENT);
@@ -350,7 +350,9 @@ export default {
         });
       },
       formatDeliveryDate() {
-        this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);
+        if (this.currentVisit.deliveryDate !== null) {
+          this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);
+        }
       },
     },
 };

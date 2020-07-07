@@ -90,7 +90,7 @@ const actions = {
     },
   [VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER]:
     ({ commit }, clientINN) => new Promise((resolve, reject) => {
-      HTTP.get(`visits??processed=true&status=2&limit=3&clientINN=${clientINN}`)
+      HTTP.get(`visits?processed=true&status=2&limit=3&clientINN=${clientINN}`)
         .then((response) => {
           commit(VISIT_WRITE_HISTORY_TO_VUEX_BY_INN, { clientINN, data: response.data });
           resolve(response);
