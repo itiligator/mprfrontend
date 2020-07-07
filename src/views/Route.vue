@@ -52,7 +52,7 @@
                   <a :href="'tel:'+clientByINN(visit.clientINN).phone">
                     {{ clientByINN(visit.clientINN).phone }}
                   </a>
-                  {{ clientByINN(visit.clientINN).clientType }}
+                  {{ clientByINN(visit.clientINN).address }}
                 </vs-col>
                 <vs-col vs-w="5" vs-offset="1">
                   <vs-button

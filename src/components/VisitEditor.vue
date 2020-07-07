@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable max-len -->
   <div v-if="!!currentVisit.UUID">
 
 <!--    заголовок страницы-->
@@ -22,6 +23,12 @@
         </vs-switch>
       </vs-tab>
       <vs-tab label="Заказ" v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+          Дата доставки
+          <vc-date-picker
+          v-model='currentVisit.deliveryDate'
+          locale="ru"
+          :min-date='new Date()'
+          :masks="masks"/>
         <vs-collapse>
           <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
             <div slot="header">
@@ -34,7 +41,7 @@
             <vs-input-number
               min="0"
               vs-size="medium"
-              label="Текущий заказ"
+              label="Заказ"
               v-model="order.order"></vs-input-number>
             <vs-input-number
               min="0"
@@ -210,6 +217,7 @@
 </template>
 
 <script>
+/* eslint-disable max-len */
 
 
 import {
@@ -226,6 +234,8 @@ import {
 } from '@/store/actions/checklists';
 import ClientPaymentHistory from '@/components/ClientPaymentHistory.vue';
 import { HTTP } from '@/utils/http';
+
+const mask = 'YYYY-MM-DD';
 
 export default {
   name: 'VisitEditor',
@@ -253,6 +263,11 @@ export default {
       selectedOrder: [],
       // previousVisits: [],
       authHeader: { Authorization: 'Token' },
+      masks: {
+        input: mask,
+        data: mask,
+        L: mask,
+      },
     };
   },
   created() {
@@ -276,6 +291,7 @@ export default {
     if (this.previousVisits !== undefined) {
       this.preparePreviousOrders();
     }
+    this.currentVisit.deliveryDate = new Date();
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -296,6 +312,8 @@ export default {
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       finishVisit() {
+        this.formatDeliveryDate();
+        this.saveCurrentVisitToVuex();
         this.$store.dispatch(VISIT_CLOSE_CURRENT);
         this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);
         this.$store.dispatch(CHECKLIST_UPLOAD_CURRENT_TO_SERVER);
@@ -330,6 +348,9 @@ export default {
             this.veryLastVisitDate = visit.date;
           });
         });
+      },
+      formatDeliveryDate() {
+        this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);
       },
     },
 };

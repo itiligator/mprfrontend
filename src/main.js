@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VCalendar from 'v-calendar';
 import UUID from 'vue-uuid';
 import Vuesax from 'vuesax';
 import Axios from 'axios';
@@ -15,6 +16,9 @@ import 'vuesax/dist/vuesax.css';
 
 Vue.use(Vuesax);
 Vue.use(UUID);
+Vue.use(VCalendar, {
+  componentPrefix: 'vc', // Now use vc-calendar and vc-date-picker
+});
 
 // Install BootstrapVue
 // Vue.use(BootstrapVue);

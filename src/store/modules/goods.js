@@ -21,7 +21,7 @@ const getters = {
 
 const actions = {
   [GOODS_REQUEST]: ({ commit }) => new Promise((resolve, reject) => {
-    HTTP.get('/products')
+    HTTP.get('/products?active=true')
       .then((resp) => {
         commit(GOODS_SUCCESS, resp);
         resolve(resp);

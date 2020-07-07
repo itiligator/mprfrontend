@@ -46,7 +46,6 @@ const actions = {
         resolve(resp);
       })
       .catch((err) => {
-        console.log(err);
         state.commit(VISIT_ERROR);
         reject(err);
       });

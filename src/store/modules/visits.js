@@ -37,6 +37,7 @@ const initialCurrentVisit = {
   status: 0,
   managerID: null,
   author: null,
+  deliveryDate: null,
 };
 
 const state = {

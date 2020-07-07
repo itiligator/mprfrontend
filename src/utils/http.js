@@ -16,6 +16,7 @@ const errorHandler = (error) => {
 
 const successHandler = (response) => {
   if (isHandlerEnabled) {
+    // eslint-disable-no-console
     console.log(response);
   }
   return response;
