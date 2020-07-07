@@ -39,7 +39,7 @@ export default {
     };
   },
   created() {
-    this.$router.push('Route');
+    this.$router.push('route');
   },
   methods:
     {

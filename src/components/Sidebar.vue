@@ -8,7 +8,7 @@
 >
 
   <div class="header-sidebar" slot="header">
-    <vs-avatar  size="70px" src="https://randomuser.me/api/portraits/men/85.jpg"/>
+<!--     <vs-avatar  size="70px" src="https://randomuser.me/api/portraits/men/85.jpg"/> -->
 
     <h4>
       {{ this.$store.getters.userFullName }}

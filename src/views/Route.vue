@@ -33,8 +33,8 @@
           </vs-row>
         </vs-card>
           <vs-switch v-model="todayOnly">
-            <span slot="on" style="font-size:16px">Сегодня</span>
-            <span slot="off" style="font-size:16px">На неделю</span>
+            <span slot="on" style="font-size:14px">Сегодня</span>
+            <span slot="off" style="font-size:14px">Всё время</span>
           </vs-switch>
           <br>
           <vs-collapse type="border" :accordion="true">
@@ -80,7 +80,7 @@
               {{ clientByINN(visit.clientINN).clientType }}
             </vs-col>
             <vs-col vs-w="5" vs-offset="1">
-              <vs-button>Посмотреть результаты</vs-button>
+              <!-- <vs-button>Посмотреть результаты</vs-button> -->
             </vs-col>
           </vs-row>
         </vs-collapse-item>
