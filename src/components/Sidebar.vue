@@ -21,11 +21,11 @@
     Сводка
   </vs-sidebar-item> -->
 
-  <vs-sidebar-item index="2" icon="map" to="/route">
+  <vs-sidebar-item index="1" icon="map" to="/route">
     Маршрут
   </vs-sidebar-item>
 
-  <vs-sidebar-item index="3" icon="location_on" to="/visit">
+  <vs-sidebar-item index="2" icon="location_on" to="/visit">
     Визит
   </vs-sidebar-item>
 
@@ -37,11 +37,11 @@
     Информация
   </vs-divider>
 
-  <vs-sidebar-item index="5" icon="perm_identity">
+  <vs-sidebar-item index="3" icon="perm_identity" to="/clients">
     Клиенты
   </vs-sidebar-item>
-  <vs-sidebar-item index="6" icon="shopping_cart">
-    Продукция
+  <vs-sidebar-item index="4" icon="shopping_cart" to="/goods">
+    Товары
   </vs-sidebar-item>
 <!--   <vs-sidebar-item index="7" icon="grade">
     Промо
