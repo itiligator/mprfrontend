@@ -229,7 +229,7 @@ export default {
       return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
     },
     photoUploadUrl() {
-      return `${HTTP.defaults.baseURL}photos/${this.currentVisit.UUID}`;
+      return `${HTTP.defaults.baseURL}/photos/${this.currentVisit.UUID}`;
     },
   },
   components: {
