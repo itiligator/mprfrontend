@@ -161,6 +161,7 @@
       </vs-tab>
       <vs-tab label="Фото">
         <vs-upload
+          v-if="currentVisit.id !== undefined"
           multiple
           single-upload
           fileName="image"
@@ -169,6 +170,9 @@
           automatic
           :accept="['JPG','jpg']"
         />
+        <div v-else>
+          Отправка фото для незапланированных визитов недоступна
+        </div>
       </vs-tab>
     </vs-tabs>
 
