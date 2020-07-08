@@ -9,6 +9,7 @@ import user from './modules/user';
 import UI from './modules/UI';
 import visits from './modules/visits';
 import auth from './modules/auth';
+import prices from './modules/prices';
 
 Vue.use(Vuex);
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     goods,
     clients,
     checklists,
+    prices,
     // order,
   },
   strict: debug,
