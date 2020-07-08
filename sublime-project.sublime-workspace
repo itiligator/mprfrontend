@@ -70,16 +70,28 @@
 			"file": "src/main.js",
 			"settings":
 			{
-				"buffer_size": 810,
+				"buffer_size": 1014,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"contents": "<template>\n  <!-- eslint-disable max-len -->\n  <div v-if=\"!!currentVisit.UUID\">\n\n<!--    заголовок страницы-->\n\n    <vs-tabs alignment=\"center\">\n      <vs-tab label=\"Оплата\" v-if=\"clientByINN(currentVisit.clientINN).clientType !== 'Магазин'\">\n        Планируемая оплата: {{ currentVisit.paymentPlan }}\n        <br>\n        Лимит: {{ clientByINN(currentVisit.clientINN).limit }}\n        <br>\n        Отсрочка платежа: {{ clientByINN(currentVisit.clientINN).delay }}\n        <vs-input\n          type=\"number\"\n          label-placeholder=\"Сумма оплаты\"\n          v-model.number=\"currentVisit.payment\"/>\n        <br>\n        <ClientPaymentHistory  :clientinn=\"currentVisit.clientINN\"></ClientPaymentHistory>\n        <vs-switch v-model=\"currentVisit.dataBase\">\n          <span slot=\"on\" style=\"font-size:16px\">ПБК</span>\n          <span slot=\"off\" style=\"font-size:16px\">Тест</span>\n        </vs-switch>\n      </vs-tab>\n      <vs-tab label=\"Заказ\" v-if=\"clientByINN(currentVisit.clientINN).clientType !== 'Магазин'\">\n          Дата доставки\n          <vc-date-picker\n          v-model='currentVisit.deliveryDate'\n          locale=\"ru\"\n          :min-date='new Date()'\n          :masks=\"masks\"/>\n        <vs-collapse>\n          <vs-collapse-item :key=\"index\" v-for=\"(order, index) in currentVisit.orders\">\n            <div slot=\"header\">\n              {{ productByItem(order.productItem).name }} <br>\n              <!-- {{ stringLineFromOrder(order) }} -->\n            </div>\n            <vs-button\n              @click=\"order.order = order.recommend\">Рекомендуемый заказ: {{ order.recommend }}\n            </vs-button>\n            <vs-input-number\n              min=\"0\"\n              vs-size=\"medium\"\n              label=\"Заказ\"\n              v-model=\"order.order\"></vs-input-number>\n            <vs-input-number\n              min=\"0\"\n              vs-size=\"medium\"\n              label=\"Остаток\"\n              v-model=\"order.balance\"\n              @input=\"updateRecomSales(index)\"\n            ></vs-input-number>\n\n            <vs-list>\n              <vs-list-header title=\"Предыдущие заказы\"></vs-list-header>\n              <vs-list-item\n                v-for=\"(previousOrder, date) in previousOrders[order.productItem]\"\n                :key=\"previousOrder.id\"\n                :title=\"date\">\n                {{ stringLineFromOrder(previousOrder) }}\n              </vs-list-item>\n            </vs-list>\n          </vs-collapse-item>\n        </vs-collapse>\n\n      </vs-tab>\n      <vs-tab label=\"Чеклист\">\n        <!--    чек-лист для Драфт и Хорека-->\n        <div v-if=\"clientByINN(currentVisit.clientINN).clientType === 'Хорека'\n    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'\">\n          <vs-row>\n            <vs-col vs-w=\"12\">\n              <vs-table stripe :hoverFlat=\"true\"\n                        :data=\"checklist.filter((q) => q.section === 'Цены' )\"\n                        noDataText=\"Вопросы в чеклисте отсутствуют\">\n                <template slot=\"thead\">\n                <vs-th>\n                  Сорт пива\n                </vs-th>\n                <vs-th>\n                  Цена\n                </vs-th>\n                <vs-th>\n                  Остаток\n                </vs-th>\n                </template>\n\n                <template slot-scope=\"{data}\">\n                <vs-tr :key=\"question.UUID\" v-for=\"(question, index) in data\" >\n\n                  <vs-td :data=\"question.text\">\n                    {{ question.text }}\n                  </vs-td>\n\n                  <vs-td :data=\"data[index].answer1\">\n                    <vs-input v-model=\"data[index].answer1\"/>\n                  </vs-td>\n\n                  <vs-td :data=\"data[index].answer2\">\n                    <vs-input v-model=\"data[index].answer2\"/>\n                  </vs-td>\n\n                </vs-tr>\n                </template>\n\n              </vs-table>\n              <vs-table stripe :hoverFlat=\"true\"\n                        :data=\"checklist.filter((q) => q.section === 'Кеги' )\"\n                        noDataText=\"Вопросы в чеклисте отсутствуют\">\n                <template slot=\"thead\">\n                <vs-th>\n                  Вопросы\n                </vs-th>\n                <vs-th>\n                  Ответы\n                </vs-th>\n                </template>\n\n                <template slot-scope=\"{data}\">\n                <vs-tr :key=\"question.UUID\" v-for=\"(question, index) in data\" >\n\n                  <vs-td :data=\"question.text\">\n                    {{ question.text }}\n                  </vs-td>\n\n                  <vs-td :data=\"data[index].answer1\">\n                    <vs-input v-model=\"data[index].answer1\"/>\n                  </vs-td>\n\n                </vs-tr>\n                </template>\n\n              </vs-table>\n            </vs-col>\n          </vs-row>\n        </div>\n\n        <!--    чек-лист для магазина-->\n        <div v-if=\"clientByINN(currentVisit.clientINN).clientType === 'Магазин'\">\n          <vs-row>\n            <vs-col vs-w=\"12\">\n              <vs-table stripe :hoverFlat=\"true\"\n                        :data=\"checklist.filter((q) => q.section === 'Общий' )\"\n                        noDataText=\"Вопросы в чеклисте отсутствуют\">\n                <template slot=\"thead\">\n                <vs-th>\n                  Мероприятия\n                </vs-th>\n                <vs-th>\n                  Отметка провер.\n                </vs-th>\n                <vs-th>\n                  Примечание\n                </vs-th>\n                </template>\n\n                <template slot-scope=\"{data}\">\n                <vs-tr :key=\"question.UUID\" v-for=\"(question, index) in data\" >\n\n                  <vs-td :data=\"question.text\">\n                    {{ question.text }}\n                  </vs-td>\n\n                  <vs-td :data=\"data[index].answer1\">\n                    <vs-switch v-model=\"data[index].answer1\"></vs-switch>\n                  </vs-td>\n\n                  <vs-td :data=\"data[index].answer2\">\n                    <vs-input v-model=\"data[index].answer2\"/>\n                  </vs-td>\n\n                </vs-tr>\n                </template>\n              </vs-table>\n            </vs-col>\n          </vs-row>\n        </div>\n      </vs-tab>\n      <vs-tab label=\"Фото\">\n        <vs-upload\n          multiple\n          single-upload\n          fileName=\"image\"\n          :headers=\"authHeader\"\n          :action=\"photoUploadUrl\"\n          automatic\n          :accept=\"['JPG','jpg']\"\n        />\n      </vs-tab>\n    </vs-tabs>\n\n\n    <!--копки Отменить и Завершить-->\n    <vs-row vs-w=\"12\"  vs-type=\"flex\" vs-justify=\"flex-start\">\n      <vs-col vs-type=\"flex\" vs-justify=\"flex-start\" vs-align=\"center\" vs-xs=\"4\" vs-lg=\"4\">\n        <vs-button @click=\"resetVisit\">Отменить визит</vs-button>\n      </vs-col>\n      <vs-col vs-type=\"flex\" vs-justify=\"flex-end\" vs-align=\"center\" vs-xs=\"4\" vs-lg=\"4\">\n      </vs-col>\n      <vs-col vs-type=\"flex\" vs-justify=\"flex-end\" vs-align=\"center\" vs-xs=\"4\" vs-lg=\"4\">\n        <vs-button @click=\"finishVisit\">Закончить визит</vs-button>\n      </vs-col>\n    </vs-row>\n\n<!--    <vs-row class=\"fixed-row-bottom\">-->\n<!--      <vs-col>-->\n<!--        <vs-button type=\"border\" icon=\"business_center\"></vs-button>-->\n<!--        <vs-button icon=\"map\"></vs-button>-->\n<!--        <vs-button icon=\"location_on\"></vs-button>-->\n<!--        <vs-button icon=\"list_alt\"></vs-button>-->\n<!--        <vs-button icon=\"info\"></vs-button>-->\n<!--      </vs-col>-->\n<!--    </vs-row>-->\n\n  </div>\n</template>\n\n<script>\n/* eslint-disable max-len */\n\n\nimport {\n  VISIT_CLOSE_CURRENT,\n  VISIT_GET_CURRENT, VISIT_GET_HISTORY_BY_INN,\n  VISIT_SAVE_CURRENT_TO_VUEX,\n} from '@/store/actions/visits';\nimport { GETCLIENTBYINN } from '@/store/actions/clients';\nimport { ALL_GOODS, GOOD_BY_ITEM } from '@/store/actions/goods';\nimport {\n  CHECKLIST_RESET_CURRENT,\n  CHECKLIST_GET_CURRENT,\n  CHECKLIST_SAVE_CURRENT, CHECKLIST_UPLOAD_CURRENT_TO_SERVER,\n} from '@/store/actions/checklists';\nimport ClientPaymentHistory from '@/components/ClientPaymentHistory.vue';\nimport { HTTP } from '@/utils/http';\n\nconst mask = 'YYYY-MM-DD';\n\nexport default {\n  name: 'VisitEditor',\n  computed: {\n    products() {\n      return this.$schema.getters[ALL_GOODS];\n    },\n    previousVisits() {\n      return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);\n    },\n    photoUploadUrl() {\n      return `${HTTP.defaults.baseURL}photos/${this.currentVisit.UUID}`;\n    },\n  },\n  components: {\n    ClientPaymentHistory,\n  },\n  data() {\n    return {\n      currentVisit: {},\n      checklist: [],\n      timer: '',\n      previousOrders: {},\n      veryLastVisitDate: '',\n      selectedOrder: [],\n      // previousVisits: [],\n      authHeader: { Authorization: 'Token' },\n      masks: {\n        input: mask,\n        data: mask,\n        L: mask,\n      },\n    };\n  },\n  created() {\n    this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));\n    this.checklist = JSON.parse(JSON.stringify(this.$store.getters[CHECKLIST_GET_CURRENT]));\n    // this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);\n  },\n  watch: {\n    previousVisits() {\n      this.preparePreviousOrders();\n    },\n  },\n  mounted() {\n    // this.previousVisits[0].orders.forEach((order) => {\n    //   this.previousOrder[order.productItem] = order;\n    // });\n    // eslint-disable-next-line max-len\n    // this.previousVisits = this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);\n    const token = localStorage.getItem('user-token');\n    this.authHeader.Authorization = `Token ${token}`;\n    if (this.previousVisits !== undefined) {\n      this.preparePreviousOrders();\n    }\n  },\n  beforeDestroy() {\n    this.saveCurrentVisitToVuex();\n    this.saveCurrentChecklistToVuex();\n  },\n  methods:\n    {\n      saveCurrentVisitToVuex() {\n        this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);\n      },\n      saveCurrentChecklistToVuex() {\n        this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);\n      },\n      resetVisit() {\n        this.checklist = [];\n        this.$store.dispatch(CHECKLIST_RESET_CURRENT);\n        this.currentVisit = {};\n        this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);\n      },\n      finishVisit() {\n        this.currentVisit.date = new Date().toISOString().slice(0, 10);\n        this.formatDeliveryDate();\n        this.saveCurrentVisitToVuex();\n        this.$store.dispatch(VISIT_CLOSE_CURRENT);\n        this.$store.dispatch(CHECKLIST_SAVE_CURRENT, this.checklist);\n        this.$store.dispatch(CHECKLIST_UPLOAD_CURRENT_TO_SERVER);\n        this.$store.dispatch(CHECKLIST_RESET_CURRENT);\n        this.checklist = [];\n        this.$router.push('/route');\n      },\n      clientByINN(inn) {\n        return this.$store.getters[GETCLIENTBYINN](inn);\n      },\n      productByItem(productItem) {\n        return this.$store.getters[GOOD_BY_ITEM](productItem);\n      },\n      stringLineFromOrder(order) {\n        return `Заказ: ${order.order} Доставлено: ${order.delivered} Остаток: ${order.balance} Продажи: ${order.sales}`;\n      },\n      updateRecomSales(orderIndex) {\n        const { productItem } = this.currentVisit.orders[orderIndex];\n        const prevBalance = this.previousOrders[productItem][this.veryLastVisitDate].balance;\n        const prevDelivery = this.previousOrders[productItem][this.veryLastVisitDate].delivered;\n        // eslint-disable-next-line max-len\n        this.currentVisit.orders[orderIndex].sales = prevBalance + prevDelivery - this.currentVisit.orders[orderIndex].balance;\n        this.currentVisit.orders[orderIndex].recommend = this.currentVisit.orders[orderIndex].sales;\n      },\n      preparePreviousOrders() {\n        this.previousOrders = {};\n        this.previousVisits.forEach((visit) => {\n          visit.orders.forEach((order) => {\n            this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || {};\n            /* this.previousOrders[order.productItem].push(order); */\n            this.previousOrders[order.productItem][visit.date] = order;\n            this.veryLastVisitDate = visit.date;\n          });\n        });\n      },\n      formatDeliveryDate() {\n        if ((this.currentVisit.deliveryDate || null) !== null) {\n          this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);\n        }\n      },\n    },\n};\n</script>\n\n<style scoped>\n  .fixed-row-bottom { position: fixed; bottom: 0; z-index: 999;}\n  .button.vs-tabs--btn {font-size: 20px}\n</style>\n",
 			"file": "src/components/VisitEditor.vue",
+			"file_size": 12975,
+			"file_write_time": 132385876374864984,
 			"settings":
 			{
-				"buffer_size": 12613,
+				"buffer_size": 12512,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/App.vue",
+			"settings":
+			{
+				"buffer_size": 1524,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -268,7 +280,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
@@ -298,7 +310,7 @@
 						"translation.y": 162.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
@@ -328,7 +340,7 @@
 						"translation.y": 378.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
@@ -337,15 +349,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 810,
+						"buffer_size": 1014,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								518,
-								518
+								461,
+								461
 							]
 						],
 						"settings":
@@ -356,7 +368,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -365,15 +377,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12613,
+						"buffer_size": 12512,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10488,
-								10488
+								5863,
+								5863
 							]
 						],
 						"settings":
@@ -383,7 +395,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5495.0,
+						"translation.y": 2417.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -391,6 +403,36 @@
 				},
 				{
 					"buffer": 5,
+					"file": "src/App.vue",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 1524,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/User/vue-syntax-highlight-master/vue.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
 					"file": "src/store/modules/visits.js",
 					"semi_transient": false,
 					"settings":
@@ -416,11 +458,11 @@
 						"translation.y": 702.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "src/store/modules/checklists.js",
 					"semi_transient": false,
 					"settings":
@@ -446,11 +488,11 @@
 						"translation.y": 540.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": "src/utils/http.js",
 					"semi_transient": false,
 					"settings":
@@ -476,11 +518,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 9,
 					"file": "src/store/modules/goods.js",
 					"semi_transient": false,
 					"settings":
@@ -506,11 +548,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 10,
 					"file": "src/views/Visit.vue",
 					"semi_transient": false,
 					"settings":
@@ -536,11 +578,11 @@
 						"translation.y": 162.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 11,
 					"file": "src/components/LoginForm.vue",
 					"semi_transient": false,
 					"settings":
@@ -566,7 +608,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 11,
 					"type": "text"
 				}
 			]

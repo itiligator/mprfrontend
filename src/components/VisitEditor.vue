@@ -66,114 +66,97 @@
       </vs-tab>
       <vs-tab label="Чеклист">
         <!--    чек-лист для Драфт и Хорека-->
+
         <div v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
-    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'">
+    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'"
+    style="margin-top:2mm;">
+          <!-- BEGIN CHECKLIST Цены -->
           <vs-row>
-            <vs-col vs-w="12">
-              <vs-table stripe :hoverFlat="true"
-                        :data="checklist.filter((q) => q.section === 'Цены' )"
-                        noDataText="Вопросы в чеклисте отсутствуют">
-                <template slot="thead">
-                <vs-th>
-                  Сорт пива
-                </vs-th>
-                <vs-th>
-                  Цена
-                </vs-th>
-                <vs-th>
-                  Остаток
-                </vs-th>
-                </template>
-
-                <template slot-scope="{data}">
-                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
-
-                  <vs-td :data="question.text">
-                    {{ question.text }}
-                  </vs-td>
-
-                  <vs-td :data="data[index].answer1">
-                    <vs-input v-model="data[index].answer1"/>
-                  </vs-td>
-
-                  <vs-td :data="data[index].answer2">
-                    <vs-input v-model="data[index].answer2"/>
-                  </vs-td>
-
-                </vs-tr>
-                </template>
-
-              </vs-table>
-              <vs-table stripe :hoverFlat="true"
-                        :data="checklist.filter((q) => q.section === 'Кеги' )"
-                        noDataText="Вопросы в чеклисте отсутствуют">
-                <template slot="thead">
-                <vs-th>
-                  Вопросы
-                </vs-th>
-                <vs-th>
-                  Ответы
-                </vs-th>
-                </template>
-
-                <template slot-scope="{data}">
-                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
-
-                  <vs-td :data="question.text">
-                    {{ question.text }}
-                  </vs-td>
-
-                  <vs-td :data="data[index].answer1">
-                    <vs-input v-model="data[index].answer1"/>
-                  </vs-td>
-
-                </vs-tr>
-                </template>
-
-              </vs-table>
+            <vs-col vs-w="4">
+              <b>Сорт пива</b>
+            </vs-col>
+            <vs-col vs-w="4">
+              <b>Цена</b>
+            </vs-col>
+            <vs-col vs-w="4">
+              <b>Остаток</b>
             </vs-col>
           </vs-row>
+          <vs-row
+          v-for="question in checklist.filter((q) => q.section === 'Цены' )"
+          v-bind:key="question.UUID"
+          style="margin-top:2mm;">
+            <vs-col vs-w="4">
+              {{ question.text }}
+            </vs-col>
+            <vs-col vs-w="4">
+              <vs-input class="compact-form" v-model="question.answer1"/>
+            </vs-col>
+            <vs-col vs-w="4">
+              <vs-input class="compact-form" v-model="question.answer2"/>
+            </vs-col>
+          </vs-row>
+
+        <!-- END CHECKLIST Цены -->
+
+        <!-- BEGIN CHECKLIST Кеги -->
+
+          <vs-row style="margin-top:4mm;">
+            <vs-col vs-w="6">
+              <b>Вопросы</b>
+            </vs-col>
+            <vs-col vs-w="6">
+              <b>Ответы</b>
+            </vs-col>
+          </vs-row>
+          <vs-row
+          v-for="question in checklist.filter((q) => q.section === 'Кеги' )"
+          v-bind:key="question.UUID"
+          style="margin-top:2mm;">
+            <vs-col vs-w="6">
+              {{ question.text }}
+            </vs-col>
+            <vs-col vs-w="6">
+              <vs-input class="compact-form" v-model="question.answer1"/>
+            </vs-col>
+          </vs-row>
+
+        <!-- END CHECKLIST Кеги -->
+
         </div>
 
+
         <!--    чек-лист для магазина-->
+        <!-- BEGIN CHECKLIST Общий -->
         <div v-if="clientByINN(currentVisit.clientINN).clientType === 'Магазин'">
-          <vs-row>
-            <vs-col vs-w="12">
-              <vs-table stripe :hoverFlat="true"
-                        :data="checklist.filter((q) => q.section === 'Общий' )"
-                        noDataText="Вопросы в чеклисте отсутствуют">
-                <template slot="thead">
-                <vs-th>
-                  Мероприятия
-                </vs-th>
-                <vs-th>
-                  Отметка провер.
-                </vs-th>
-                <vs-th>
-                  Примечание
-                </vs-th>
-                </template>
+                  <vs-row style="margin-top:4mm;">
+            <vs-col vs-w="7">
+              <b>Мероприятие</b>
+            </vs-col>
+            <vs-col vs-w="2">
 
-                <template slot-scope="{data}">
-                <vs-tr :key="question.UUID" v-for="(question, index) in data" >
-
-                  <vs-td :data="question.text">
-                    {{ question.text }}
-                  </vs-td>
-
-                  <vs-td :data="data[index].answer1">
-                    <vs-switch v-model="data[index].answer1"></vs-switch>
-                  </vs-td>
-
-                  <vs-td :data="data[index].answer2">
-                    <vs-input v-model="data[index].answer2"/>
-                  </vs-td>
-
-                </vs-tr>
-                </template>
-              </vs-table>
+            </vs-col>
+            <vs-col vs-w="3">
+              <b>Примечание</b>
             </vs-col>
           </vs-row>
+          <vs-row
+          v-for="question in checklist.filter((q) => q.section === 'Общий' )"
+          v-bind:key="question.UUID"
+          style="margin-top:2mm;">
+            <vs-col vs-w="7">
+              {{ question.text }}
+            </vs-col>
+            <vs-col vs-w="2">
+              <vs-switch v-model="question.answer1"/>
+            </vs-col>
+            <vs-col vs-w="3">
+              <vs-input class="compact-form" v-model="question.answer2"/>
+            </vs-col>
+          </vs-row>
+
+        <!-- END CHECKLIST Общий -->
+
         </div>
       </vs-tab>
       <vs-tab label="Фото">
@@ -360,4 +343,5 @@ export default {
 <style scoped>
   .fixed-row-bottom { position: fixed; bottom: 0; z-index: 999;}
   .button.vs-tabs--btn {font-size: 20px}
+  .compact-form { max-width: 90%;}
 </style>
