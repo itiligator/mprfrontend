@@ -10,6 +10,31 @@
     </vs-col>
   </vs-row>
 
+  <!-- Табличка товаров -->
+  <vs-row style="margin-top:2mm;">
+    <vs-col vs-w='3'>
+      <b>Товар</b>
+    </vs-col>
+    <vs-col vs-w='3'>
+      <b>Цены</b>
+    </vs-col>
+    <vs-col vs-w='6'>
+      <b>Описание</b>
+    </vs-col>
+  </vs-row>
+
+  <vs-row v-for="good in goods" v-bind:key="good.item" style="margin-top:2mm;">
+    <vs-col vs-w='3'>
+      {{ good.name }}
+      <br/>
+      арт. {{ good.item }}
+    </vs-col>
+    <vs-col vs-w='3'>
+    </vs-col>
+    <vs-col vs-w='6'>
+      {{ good.description }}
+    </vs-col>
+  </vs-row>
 
 </div>
 
@@ -18,6 +43,7 @@
 <script>
 
 import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
+import { ALL_GOODS } from '@/store/actions/goods';
 
 
 export default {
@@ -29,6 +55,9 @@ export default {
     title: 'МПР | Товары',
   },
   computed: {
+    goods() {
+      return this.$store.getters[ALL_GOODS];
+    },
   },
   data() {
     return {
