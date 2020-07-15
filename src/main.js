@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import vuetify from 'vuetify';
 import UUID from 'vue-uuid';
 import Meta from 'vue-meta';
 import store from './store';
 import router from './router';
 import App from './App.vue';
 import './registerServiceWorker';
+import vuetify from './plugins/vuetify';
 
 
 Vue.use(UUID);
