@@ -6,7 +6,6 @@ import goods from '@/store/modules/goods';
 import checklists from '@/store/modules/checklists';
 import createPersistedState from 'vuex-persistedstate';
 import user from './modules/user';
-import UI from './modules/UI';
 import visits from './modules/visits';
 import auth from './modules/auth';
 
@@ -18,7 +17,6 @@ export default new Vuex.Store({
   modules: {
     user,
     auth,
-    UI,
     visits,
     goods,
     clients,

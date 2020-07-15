@@ -3,7 +3,6 @@
 
 import { HTTP } from '@/utils/http';
 
-import { HIDE_SIDEBAR } from '@/store/actions/UI';
 // import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
 // import { CLIENTS_REQUEST } from '@/store/actions/clients';
 // import { GOODS_REQUEST } from '@/store/actions/goods';
@@ -53,7 +52,6 @@ const actions = {
   [AUTH_LOGOUT]: ({ commit }) => new Promise((resolve) => {
     commit(VISIT_FLASH_ALL);
     commit(AUTH_LOGOUT);
-    commit(HIDE_SIDEBAR);
     window.localStorage.clear();
     // window.localStorage.removeItem('user-token');
     resolve();

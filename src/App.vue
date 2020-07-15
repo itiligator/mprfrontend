@@ -1,16 +1,15 @@
 <template>
-  <div id="app">
-    <sidebar></sidebar>
-    <router-view></router-view>
-  </div>
+  <v-app>
+    <v-main>
+      <router-view></router-view>
+    </v-main>
+  </v-app>
 </template>
 
 
 <script>
-// import 'bootstrap/dist/css/bootstrap.css';
-// import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-import Sidebar from '@/components/Sidebar.vue';
+
 import { VISIT_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/visits';
 import { CLIENTS_REQUEST } from '@/store/actions/clients';
 import { GOODS_REQUEST } from '@/store/actions/goods';
@@ -19,7 +18,6 @@ import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
 export default {
   name: 'App',
   components: {
-    Sidebar,
   },
   mounted() {
     if (this.$store.getters.isAuthenticated) {
@@ -37,7 +35,6 @@ export default {
     },
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no' },
     ],
   },
 };
