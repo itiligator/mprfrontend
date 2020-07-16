@@ -11,6 +11,7 @@
                     <v-btn
                     v-bind="attrs"
                     v-on="on"
+                    class="pa-2"
                     >
                     ИНФО
                     </v-btn>
@@ -34,7 +35,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn>
+            <v-btn class="pa-2">
                 Задачи
             </v-btn>
             <v-spacer></v-spacer>
@@ -92,7 +93,7 @@
                         <td></td>
                         <td><v-btn>Переход в<br/>клиента</v-btn></td>
                     </tr>
-                    <tr>
+                    <tr class="blue">
                         <td>Окончен</td>
                         <td>1000</td>
                         <td></td>
@@ -109,15 +110,12 @@
         </v-simple-table>
 
         <v-app-bar dense flat bottom fixed color="primary">
-            <v-btn>
-                На неделю/на
-                <br/>
-                текущую дату
+            <v-btn left class="pa-2">
+                На неделю/на<br/> текущую дату
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn>
+            <v-btn right to="/visit" class="pa-2">
                 ДОБАВИТЬ
-                <br/>
                 ВИЗИТ
             </v-btn>
         </v-app-bar>
