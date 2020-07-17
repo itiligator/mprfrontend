@@ -3,8 +3,8 @@
         <v-app-bar elevate-on-scroll dense fixed prominent color="primary" height="100">
             <v-container>
                 <v-layout>
-                    <v-chip class="ma-1">Вне маршрута</v-chip>
-                    <v-chip class="ma-1">В работе</v-chip>
+                    <v-chip class="ma-1" color='secondary'>Вне маршрута</v-chip>
+                    <v-chip class="ma-1" color='secondary'>В работе</v-chip>
                     <v-autocomplete
                         :items="['Дока фуд','Робинзон','АЛАН','Альфа-Технологии','Банзик']"
                         hide-details
@@ -14,8 +14,8 @@
                     </v-autocomplete>
                 </v-layout>
                 <v-layout>
-                    <v-chip class="ma-1">Визит №9000<br/> 21.07.2020</v-chip>
-                    <v-chip class="ma-1">8500</v-chip>
+                    <v-chip class="ma-1" color='secondary'>Визит №9000<br/> 21.07.2020</v-chip>
+                    <v-chip class="ma-1" color='secondary'>8500</v-chip>
                      <v-menu
                         :close-on-content-click="true"
                         :nudge-right="40"
@@ -126,10 +126,24 @@
                 <v-layout>
                     <v-btn left min-width="140">Заказ</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn right min-width="140">Фото</v-btn>
+                      <v-btn
+                        min-width="140"
+                        depressed
+                        :loading="isSelecting"
+                        @click="onButtonClick"
+                      >
+                        Фото
+                      </v-btn>
+                      <input
+                        ref="uploader"
+                        class="d-none"
+                        type="file"
+                        accept="image/*"
+                        @change="onFileChanged"
+                      >
                 </v-layout>
                 <v-layout>
-                    <v-btn left min-width="140">Оплата</v-btn>
+                    <v-btn left min-width="140" to="/payment">Оплата</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn right min-width="140">Сохранить</v-btn>
                 </v-layout>
@@ -146,17 +160,37 @@
 <script>
 
 export default {
-  name: 'Visti',
+  name: 'Visit',
   components: {
   },
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),
+      defaultButtonText: 'Фото',
+      selectedFile: null,
+      isSelecting: false,
     };
   },
   computed: {
     username() {
       return this.$store.getters.userFullName;
+    },
+    buttonText() {
+      return this.defaultButtonText;
+    },
+  },
+  methods: {
+    onButtonClick() {
+      this.isSelecting = true;
+      window.addEventListener('focus', () => {
+        this.isSelecting = false;
+      }, { once: true });
+
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      [this.selectedFile] = e.target.files;
+      // do something
     },
   },
 };

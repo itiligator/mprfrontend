@@ -93,7 +93,7 @@
                         <td></td>
                         <td><v-btn>Переход в<br/>клиента</v-btn></td>
                     </tr>
-                    <tr class="blue">
+                    <tr class="accent">
                         <td>Окончен</td>
                         <td>1000</td>
                         <td></td>
