@@ -124,7 +124,7 @@
         <v-app-bar flat bottom fixed prominent color="primary">
             <v-container>
                 <v-layout>
-                    <v-btn left min-width="140">Заказ</v-btn>
+                    <v-btn left min-width="140" to="/order">Заказ</v-btn>
                     <v-spacer></v-spacer>
                       <v-btn
                         min-width="140"
