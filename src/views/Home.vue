@@ -43,7 +43,7 @@
         </v-app-bar>
 
 <!-- Тулбар нужен чтобы app-bar не перекрывал содержимое страницы -->
-        <v-toolbar dense flat fixed color="primary"></v-toolbar>
+        <v-toolbar dense flat fixed></v-toolbar>
 
         <v-simple-table>
             <template v-slot:default>
@@ -58,9 +58,9 @@
                     <tr><td>АПА</td><td>300</td></tr>
                     <tr><td>Балтийский портер</td><td>100</td></tr>
                     <tr><td>IPA</td><td>50</td></tr>
-                    <tr><td>IPA</td><td>50</td></tr>
-                    <tr><td>IPA</td><td>50</td></tr>
-                    <tr><td>IPA</td><td>50</td></tr>
+                    <tr><td>Салек темный</td><td>50</td></tr>
+                    <tr><td>Мерцен</td><td>50</td></tr>
+                    <tr><td>Линдерхоф</td><td>50</td></tr>
                 </tbody>
             </template>
         </v-simple-table>
@@ -78,13 +78,13 @@
                     <tr>
                         <td>Запланирован</td>
                         <td>2000</td>
-                        <td><v-btn>Начать<br/>визит</v-btn></td>
+                        <td><v-btn to="/visit">Начать<br/>визит</v-btn></td>
                         <td><v-btn>Переход в<br/>клиента</v-btn></td>
                     </tr>
                     <tr>
                         <td>Запланирован</td>
                         <td>3000</td>
-                        <td><v-btn>Начать<br/>визит</v-btn></td>
+                        <td><v-btn to="/visit">Начать<br/>визит</v-btn></td>
                         <td><v-btn>Переход в<br/>клиента</v-btn></td>
                     </tr>
                     <tr>
@@ -120,7 +120,7 @@
             </v-btn>
         </v-app-bar>
         <!-- Тулбар нужен чтобы app-bar не перекрывал содержимое страницы -->
-        <v-toolbar dense flat bottom fixed color="primary"></v-toolbar>
+        <v-toolbar dense flat bottom fixed></v-toolbar>
     </div>
 </template>
 
