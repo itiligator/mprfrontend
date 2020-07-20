@@ -83,18 +83,12 @@ export default {
         processed: null,
         invoice: null,
         status: 1,
-        // managerID: this.$store.getters.userID,
-        // author: this.$store.getters.userID,
       },
       selectedClient: {},
     };
   },
   computed: {
-    // visits() {
-    //   return this.$store.getters[VISIT_GET_ALL];
-    // },
     planned_visits() {
-      // return this.visits.filter((v) => v.status === 0);
       return this.$store.getters[VISIT_GET_PLANNED];
     },
     isCurrentVisit() {
@@ -113,16 +107,8 @@ export default {
     },
     startVisitFromPlanned(visitData) {
       this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, visitData.clientINN);
-      // console.log('start visit at the beginning before orders fetch');
-      const orders = this.products.map((p) => ({
-        productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
-      }));
-      // console.log('start before composed data defining');
       const composedVisitData = JSON.parse(JSON.stringify(visitData));
-      // console.log('start before composed data editing');
-      composedVisitData.orders = orders;
       composedVisitData.status = 1;
-      // console.log('start before dispatch');
       this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
       const { clientType } = this.clientByINN(composedVisitData.clientINN);
       // eslint-disable-next-line max-len
@@ -131,13 +117,8 @@ export default {
     },
     startVisitFromClientList(client) {
       this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, client.inn);
-      const orders = this.products.map((p) => ({
-        productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
-      }));
-      this.initialVisit.orders = orders;
       this.initialVisit.clientINN = client.inn;
       this.initialVisit.UUID = this.$uuid.v4();
-      // this.initialVisit.author = this.$store.getters.userID;
       this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.initialVisit);
       // eslint-disable-next-line max-len
       const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === client.clientType);
