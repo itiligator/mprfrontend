@@ -28,7 +28,8 @@
           v-model='currentVisit.deliveryDate'
           locale="ru"
           :min-date='new Date()'
-          :masks="masks"/>
+          :masks="masks"
+          style="z-index:800;"/>
         <vs-collapse>
           <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
             <div slot="header">
@@ -62,7 +63,59 @@
             </vs-list>
           </vs-collapse-item>
         </vs-collapse>
+        Добавить товары в заказ
+        <vs-select
+          autocomplete
+          v-model="selectedProduct"
+          width="100%"
+          >
+          <vs-select-item :key="index" :value="item" :text="item.name" v-for="(item, index) in products"/>
+        </vs-select>
+        <vs-table
+          v-model="highlightedProduct"
+          :data="orderedProducts"
+          style="z-index:100;">
+          <template slot="header">
+            <h3>
+              Заказ
+            </h3>
+          </template>
+          <template slot="thead" style="z-index:200;">
+            <vs-th style="z-index:200;">
+              Товар
+            </vs-th>
+            <vs-th style="z-index:200;">
+              Цена
+            </vs-th>
+            <vs-th style="z-index:200;">
+              Количество
+            </vs-th>
+            <vs-th style="z-index:200;">
+              Стоимость
+            </vs-th>
+          </template>
 
+          <template slot-scope="{data}">
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
+              <vs-td :data="data[indextr]">
+                {{data[indextr].name}}
+              </vs-td>
+
+              <vs-td>
+              </vs-td>
+
+              <vs-td>
+              </vs-td>
+
+              <vs-td>
+              </vs-td>
+            </vs-tr>
+          </template>
+        </vs-table>
+        <br/>
+        <br/>
+        Выбранный в таблице
+        {{ highlightedProduct }}
       </vs-tab>
       <vs-tab label="Чеклист">
         <!--    чек-лист для Драфт и Хорека-->
@@ -227,7 +280,7 @@ export default {
   name: 'VisitEditor',
   computed: {
     products() {
-      return this.$schema.getters[ALL_GOODS];
+      return this.$store.getters[ALL_GOODS];
     },
     previousVisits() {
       return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
@@ -241,12 +294,14 @@ export default {
   },
   data() {
     return {
+      selectedProduct: null,
+      highlightedProduct: null,
       currentVisit: {},
       checklist: [],
       timer: '',
       previousOrders: {},
       veryLastVisitDate: '',
-      selectedOrder: [],
+      orderedProducts: [],
       // previousVisits: [],
       authHeader: { Authorization: 'Token' },
       masks: {
@@ -265,6 +320,10 @@ export default {
     previousVisits() {
       this.preparePreviousOrders();
     },
+    selectedProduct() {
+      console.log('in wather');
+      this.addProductToOrders();
+    },
   },
   mounted() {
     // this.previousVisits[0].orders.forEach((order) => {
@@ -272,9 +331,7 @@ export default {
     // });
     // eslint-disable-next-line max-len
     // this.previousVisits = this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
-    const token = localStorage.getItem('user-token');
-    this.authHeader.Authorization = `Token ${token}`;
-    if (this.previousVisits !== undefined) {
+    if (this.previousVisits !== undefined) { /* не уверен, что должна быть именно такая проверка */
       this.preparePreviousOrders();
     }
   },
@@ -339,6 +396,14 @@ export default {
         if ((this.currentVisit.deliveryDate || null) !== null) {
           this.currentVisit.deliveryDate = new Date(this.currentVisit.deliveryDate).toISOString().substring(0, 10);
         }
+      },
+      addProductToOrders() {
+        if (this.selectedProduct !== null) {
+          if (!(this.orderedProducts.includes(this.selectedProduct))) {
+            this.orderedProducts.push(this.selectedProduct);
+          }
+        }
+        this.selectedProduct = null;
       },
     },
 };
