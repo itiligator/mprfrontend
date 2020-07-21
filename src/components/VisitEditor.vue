@@ -115,6 +115,10 @@
                 vs-size="medium"
                 v-model="data[indextr].order">
               </vs-input-number>
+              <vs-button @click="data[indextr].order=10">10</vs-button>
+              <vs-button @click="data[indextr].order=20">20</vs-button>
+              <vs-button @click="data[indextr].order=30">30</vs-button>
+              <vs-button @click="data[indextr].order=50">50</vs-button>
               </vs-td>
 
               <vs-td>
