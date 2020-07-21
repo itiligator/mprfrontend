@@ -69,7 +69,11 @@
           v-model="selectedProduct"
           width="100%"
           >
-          <vs-select-item :key="index" :value="item" :text="item.name" v-for="(item, index) in products"/>
+          <vs-select-item
+            :key="index"
+            :value="item"
+            :text="item.name"
+            v-for="(item, index) in products"/>
         </vs-select>
         <vs-table
           v-model="highlightedProduct"
@@ -98,16 +102,23 @@
           <template slot-scope="{data}">
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
               <vs-td :data="data[indextr]">
-                {{data[indextr].name}}
+                {{ productByItem(data[indextr].productItem).name }}
               </vs-td>
 
               <vs-td>
+                {{ priceByItem(data[indextr].productItem) }}
               </vs-td>
 
               <vs-td>
+              <vs-input-number
+                min="0"
+                vs-size="medium"
+                v-model="data[indextr].order">
+              </vs-input-number>
               </vs-td>
 
               <vs-td>
+                {{ Math.round(data[indextr].order*priceByItem(data[indextr].productItem)*100)/100 }}
               </vs-td>
             </vs-tr>
           </template>
@@ -271,6 +282,10 @@ import {
   CHECKLIST_GET_CURRENT,
   CHECKLIST_SAVE_CURRENT, CHECKLIST_UPLOAD_CURRENT_TO_SERVER,
 } from '@/store/actions/checklists';
+import {
+  PRICES_GET_BY_PRODUCTITEM,
+  PRICES_DOWNLOAD_ALL_FROM_SERVER,
+} from '@/store/actions/prices';
 import ClientPaymentHistory from '@/components/ClientPaymentHistory.vue';
 import { HTTP } from '@/utils/http';
 
@@ -287,6 +302,9 @@ export default {
     },
     photoUploadUrl() {
       return `${HTTP.defaults.baseURL}/photos/${this.currentVisit.UUID}`;
+    },
+    client() {
+      return this.clientByINN(this.currentVisit.clientINN);
     },
   },
   components: {
@@ -321,7 +339,6 @@ export default {
       this.preparePreviousOrders();
     },
     selectedProduct() {
-      console.log('in wather');
       this.addProductToOrders();
     },
   },
@@ -334,6 +351,7 @@ export default {
     if (this.previousVisits !== undefined) { /* не уверен, что должна быть именно такая проверка */
       this.preparePreviousOrders();
     }
+    this.$store.dispatch(PRICES_DOWNLOAD_ALL_FROM_SERVER);
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -370,6 +388,13 @@ export default {
       productByItem(productItem) {
         return this.$store.getters[GOOD_BY_ITEM](productItem);
       },
+      priceByItem(productItem) {
+        const pr = this.$store.getters[PRICES_GET_BY_PRODUCTITEM](productItem).find((p) => (p.dataBase === this.currentVisit.dataBase && p.priceType === this.client.priceType));
+        if (pr !== undefined) {
+          return Number(pr.amount.replace(',', '.'));
+        }
+        return undefined;
+      },
       stringLineFromOrder(order) {
         return `Заказ: ${order.order} Доставлено: ${order.delivered} Остаток: ${order.balance} Продажи: ${order.sales}`;
       },
@@ -399,8 +424,15 @@ export default {
       },
       addProductToOrders() {
         if (this.selectedProduct !== null) {
-          if (!(this.orderedProducts.includes(this.selectedProduct))) {
-            this.orderedProducts.push(this.selectedProduct);
+          if (!(this.orderedProducts.map((p) => p.productItem).includes(this.selectedProduct.item))) {
+            this.orderedProducts.push({
+              productItem: this.selectedProduct.item,
+              order: 0,
+              delivered: 0,
+              recommend: 0,
+              balance: 0,
+              sales: 0,
+            });
           }
         }
         this.selectedProduct = null;
