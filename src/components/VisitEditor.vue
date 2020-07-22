@@ -17,7 +17,7 @@
           v-model.number="currentVisit.payment"/>
         <br>
         <ClientPaymentHistory  :clientinn="currentVisit.clientINN"></ClientPaymentHistory>
-        <vs-switch v-model="currentVisit.dataBase">
+        <vs-switch v-model="currentVisit.dataBase" @change="updatePrices">
           <span slot="on" style="font-size:16px">ПБК</span>
           <span slot="off" style="font-size:16px">Тест</span>
         </vs-switch>
@@ -62,14 +62,14 @@
             <vs-th>
               Ст-сть
             </vs-th>
-            <vs-th>
-            </vs-th>
           </template>
 
           <template slot-scope="{data}">
             <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
               <vs-td>
                 {{ order.product.name }}
+                <br/>
+                <vs-button @click="yAOL.removeItem(order)" color="primary" type="border">Удалить</vs-button>
               </vs-td>
 
               <vs-td>
@@ -89,10 +89,6 @@
 
               <vs-td>
                 {{ order.total() }}
-              </vs-td>
-              <vs-td>
-                <vs-button @click="openPopup(indextr)" color="primary" type="border">Изм.</vs-button>
-                <vs-button @click="removeProductFromOrders(indextr)" color="primary" type="border">Удал.</vs-button>
               </vs-td>
             </vs-tr>
           </template>
@@ -288,6 +284,10 @@ class Product {
     this.description = g.description;
     this.price = price;
   }
+
+  updatePrice(price) {
+    this.price = price;
+  }
 }
 
 class OrderItem {
@@ -313,8 +313,26 @@ class OrderList {
     }
   }
 
+  removeItem(item) {
+    const index = this.items.indexOf(item);
+    if (index > -1) {
+      this.items.splice(index, 1);
+    }
+  }
+
   total() {
     return this.items.map((i) => i.total()).reduce((a, b) => a + b, 0);
+  }
+
+  orderArray() {
+    return this.items.map((i) => ({
+      productItem: i.product.item,
+      order: i.order,
+      delivered: i.delivered,
+      recommend: i.recommend,
+      sales: i.sales,
+      balance: i.balance,
+    }));
   }
 }
 
@@ -393,6 +411,10 @@ export default {
   methods:
     {
       saveCurrentVisitToVuex() {
+        console.log(this.yAOL.orderArray());
+        console.log(this.currentVisit);
+        this.currentVisit.orders = [];
+        this.currentVisit.orders = this.yAOL.orderArray();
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
       saveCurrentChecklistToVuex() {
@@ -480,6 +502,9 @@ export default {
       },
       prepareProducts() {
         this.yAG = this.products.map((p) => new Product(p, this.priceByItem(p.item)));
+      },
+      updatePrices() {
+        this.yAG.forEach((g) => g.updatePrice(this.priceByItem(g.item)));
       },
     },
 };
