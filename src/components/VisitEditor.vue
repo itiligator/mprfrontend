@@ -28,41 +28,7 @@
           v-model='currentVisit.deliveryDate'
           locale="ru"
           :min-date='new Date()'
-          :masks="masks"
-          style="z-index:800;"/>
-        <vs-collapse>
-          <vs-collapse-item :key="index" v-for="(order, index) in currentVisit.orders">
-            <div slot="header">
-              {{ productByItem(order.productItem).name }} <br>
-              <!-- {{ stringLineFromOrder(order) }} -->
-            </div>
-            <vs-button
-              @click="order.order = order.recommend">Рекомендуемый заказ: {{ order.recommend }}
-            </vs-button>
-            <vs-input-number
-              min="0"
-              vs-size="medium"
-              label="Заказ"
-              v-model="order.order"></vs-input-number>
-            <vs-input-number
-              min="0"
-              vs-size="medium"
-              label="Остаток"
-              v-model="order.balance"
-              @input="updateRecomSales(index)"
-            ></vs-input-number>
-
-            <vs-list>
-              <vs-list-header title="Предыдущие заказы"></vs-list-header>
-              <vs-list-item
-                v-for="(previousOrder, date) in previousOrders[order.productItem]"
-                :key="previousOrder.id"
-                :title="date">
-                {{ stringLineFromOrder(previousOrder) }}
-              </vs-list-item>
-            </vs-list>
-          </vs-collapse-item>
-        </vs-collapse>
+          :masks="masks"/>
         Добавить товары в заказ
         <vs-select
           autocomplete
@@ -73,66 +39,84 @@
             :key="index"
             :value="item"
             :text="item.name"
-            v-for="(item, index) in products"/>
+            v-for="(item, index) in yAG"/>
         </vs-select>
         <vs-table
           v-model="highlightedProduct"
-          :data="orderedProducts"
-          style="z-index:100;">
+          :data="yAOL.items">
           <template slot="header">
             <h3>
               Заказ
             </h3>
           </template>
-          <template slot="thead" style="z-index:200;">
-            <vs-th style="z-index:200;">
+          <template slot="thead">
+            <vs-th>
               Товар
             </vs-th>
-            <vs-th style="z-index:200;">
+            <vs-th>
               Цена
             </vs-th>
-            <vs-th style="z-index:200;">
-              Количество
+            <vs-th>
+              Кол-во
             </vs-th>
-            <vs-th style="z-index:200;">
-              Стоимость
+            <vs-th>
+              Ст-сть
+            </vs-th>
+            <vs-th>
             </vs-th>
           </template>
 
           <template slot-scope="{data}">
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
-              <vs-td :data="data[indextr]">
-                {{ productByItem(data[indextr].productItem).name }}
+            <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
+              <vs-td>
+                {{ order.product.name }}
               </vs-td>
 
               <vs-td>
-                {{ priceByItem(data[indextr].productItem) }}
+                {{ order.product.price }}
+              </vs-td>
+
+              <vs-td align="center">
+                <vs-input-number
+                  min="0"
+                  v-model="order.order"
+                ></vs-input-number>
+                <vs-button @click="order.order=10" style="padding: 8px 4px;">10</vs-button> &ensp;
+                <vs-button @click="order.order=20" style="padding: 8px 4px;">20</vs-button> &ensp;
+                <vs-button @click="order.order=30" style="padding: 8px 4px;">30</vs-button> &ensp;
+                <vs-button @click="order.order=50" style="padding: 8px 4px;">50</vs-button>
               </vs-td>
 
               <vs-td>
-              <vs-input-number
-                min="0"
-                vs-size="medium"
-                v-model="data[indextr].order">
-              </vs-input-number>
-              <vs-button @click="data[indextr].order=10">10</vs-button>
-              <vs-button @click="data[indextr].order=20">20</vs-button>
-              <br/>
-              <vs-button @click="data[indextr].order=30">30</vs-button>
-              <vs-button @click="data[indextr].order=50">50</vs-button>
+                {{ order.total() }}
               </vs-td>
-
               <vs-td>
-                {{ Math.round(data[indextr].order*priceByItem(data[indextr].productItem)*100)/100 }}
+                <vs-button @click="openPopup(indextr)" color="primary" type="border">Изм.</vs-button>
+                <vs-button @click="removeProductFromOrders(indextr)" color="primary" type="border">Удал.</vs-button>
               </vs-td>
             </vs-tr>
           </template>
         </vs-table>
-        ИТОГО {{ total }}
+        ИТОГО {{ yAOL.total() }}
         <br/>
         <br/>
-        Выбранный в таблице
-        {{ highlightedProduct }}
+        <div v-if="highlightedProduct !== null && previousVisits !== []">
+        <vs-row>
+          <vs-col vs-w="4">Дата</vs-col>
+          <vs-col vs-w="2">Остаток</vs-col>
+          <vs-col vs-w="2">Продажи</vs-col>
+          <vs-col vs-w="2">Рекзаказ</vs-col>
+          <vs-col vs-w="2">Заказ</vs-col>
+        </vs-row>
+        <vs-row v-for="(o, date) in previousOrders[highlightedProduct.product.item]" v-bind:key="o.id">
+          <vs-col vs-w="4">{{date}}</vs-col>
+          <vs-col vs-w="2">{{o.balance}}</vs-col>
+          <vs-col vs-w="2">{{o.sales}}</vs-col>
+          <vs-col vs-w="2">{{o.recommend}}</vs-col>
+          <vs-col vs-w="2">{{o.order}}</vs-col>
+        </vs-row>
+        </div>
+        <br/>
       </vs-tab>
       <vs-tab label="Чеклист">
         <!--    чек-лист для Драфт и Хорека-->
@@ -274,7 +258,7 @@
 
 <script>
 /* eslint-disable max-len */
-
+/* eslint-disable max-classes-per-file */
 
 import {
   VISIT_CLOSE_CURRENT,
@@ -297,6 +281,43 @@ import { HTTP } from '@/utils/http';
 
 const mask = 'YYYY-MM-DD';
 
+class Product {
+  constructor(g, price) {
+    this.item = g.item;
+    this.name = g.name;
+    this.description = g.description;
+    this.price = price;
+  }
+}
+
+class OrderItem {
+  constructor(product) {
+    this.product = product;
+    this.order = 0;
+    this.sales = 0;
+    this.delivered = 0;
+    this.recommend = 0;
+  }
+
+  total() {
+    return Math.round((this.order * this.product.price * 100)) / 100;
+  }
+}
+
+class OrderList {
+  items = [];
+
+  newItem(product) {
+    if (!(this.items.map((i) => i.product).includes(product))) {
+      this.items.push(new OrderItem(product));
+    }
+  }
+
+  total() {
+    return this.items.map((i) => i.total()).reduce((a, b) => a + b, 0);
+  }
+}
+
 export default {
   name: 'VisitEditor',
   computed: {
@@ -312,16 +333,15 @@ export default {
     client() {
       return this.clientByINN(this.currentVisit.clientINN);
     },
-    total() {
-      const sum = this.orderedProducts.map((o) => o.order * this.priceByItem(o.productItem)).reduce((a, b) => a + b, 0);
-      return Math.round(sum * 100) / 100;
-    },
   },
   components: {
     ClientPaymentHistory,
   },
   data() {
     return {
+      yAG: [],
+      yAOL: new OrderList(),
+      editPopup: false,
       selectedProduct: null,
       highlightedProduct: null,
       currentVisit: {},
@@ -330,7 +350,14 @@ export default {
       previousOrders: {},
       veryLastVisitDate: '',
       orderedProducts: [],
-      // previousVisits: [],
+      editedOrder: {
+        productItem: -1,
+        order: 0,
+        delivered: 0,
+        balance: 0,
+        sales: 0,
+        recommend: 0,
+      },
       authHeader: { Authorization: 'Token' },
       masks: {
         input: mask,
@@ -349,15 +376,11 @@ export default {
       this.preparePreviousOrders();
     },
     selectedProduct() {
-      this.addProductToOrders();
+      this.yAOL.newItem(this.selectedProduct);
     },
   },
   mounted() {
-    // this.previousVisits[0].orders.forEach((order) => {
-    //   this.previousOrder[order.productItem] = order;
-    // });
-    // eslint-disable-next-line max-len
-    // this.previousVisits = this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.currentVisit.clientINN);
+    this.prepareProducts();
     if (this.previousVisits !== undefined) { /* не уверен, что должна быть именно такая проверка */
       this.preparePreviousOrders();
     }
@@ -434,6 +457,7 @@ export default {
       },
       addProductToOrders() {
         if (this.selectedProduct !== null) {
+          this.yAOL.newItem(this.selectedProduct.item);
           if (!(this.orderedProducts.map((p) => p.productItem).includes(this.selectedProduct.item))) {
             this.orderedProducts.push({
               productItem: this.selectedProduct.item,
@@ -446,6 +470,16 @@ export default {
           }
         }
         this.selectedProduct = null;
+      },
+      removeProductFromOrders(idx) {
+        this.orderedProducts.slice(idx, 1);
+      },
+      openPopup(idx) {
+        this.editPopup = true;
+        this.editedOrder = this.orderedProducts(idx);
+      },
+      prepareProducts() {
+        this.yAG = this.products.map((p) => new Product(p, this.priceByItem(p.item)));
       },
     },
 };
