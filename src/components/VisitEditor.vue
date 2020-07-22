@@ -117,6 +117,7 @@
               </vs-input-number>
               <vs-button @click="data[indextr].order=10">10</vs-button>
               <vs-button @click="data[indextr].order=20">20</vs-button>
+              <br/>
               <vs-button @click="data[indextr].order=30">30</vs-button>
               <vs-button @click="data[indextr].order=50">50</vs-button>
               </vs-td>
@@ -127,6 +128,7 @@
             </vs-tr>
           </template>
         </vs-table>
+        ИТОГО {{ total }}
         <br/>
         <br/>
         Выбранный в таблице
@@ -309,6 +311,10 @@ export default {
     },
     client() {
       return this.clientByINN(this.currentVisit.clientINN);
+    },
+    total() {
+      const sum = this.orderedProducts.map((o) => o.order * this.priceByItem(o.productItem)).reduce((a, b) => a + b, 0);
+      return Math.round(sum * 100) / 100;
     },
   },
   components: {
