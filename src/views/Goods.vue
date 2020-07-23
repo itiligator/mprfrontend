@@ -10,6 +10,10 @@
     </vs-col>
   </vs-row>
 
+  <vs-switch v-model="database" style="margin:2mm;">
+    <span slot="on" style="font-size:16px">ПБК</span>
+    <span slot="off" style="font-size:16px">Тест</span>
+  </vs-switch>
   <!-- Табличка товаров -->
   <vs-row style="margin-top:2mm;">
     <vs-col vs-w='3'>
@@ -29,8 +33,11 @@
     <vs-col vs-w='9'>
       {{ good.description }}
       <ul>
-        <li v-for="price in prices[good.item]" v-bind:key="price.id">
-          {{ price.priceType }}: {{ price.amount }}
+        <li v-for="price in prices[good.item]"
+          v-bind:key="price.id">
+          <div v-if="price.dataBase === database">
+            {{ price.priceType }}: {{ price.amount }}
+          </div>
         </li>
       </ul>
     </vs-col>
@@ -64,6 +71,7 @@ export default {
   },
   data() {
     return {
+      database: true,
     };
   },
   created() {
@@ -75,6 +83,9 @@ export default {
     {
       toggleSidebar() {
         this.$store.dispatch(TOGGLE_SIDEBAR);
+      },
+      priceByItem(productItem) {
+        return this.prices[productItem];
       },
     },
 };
