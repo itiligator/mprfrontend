@@ -155,11 +155,7 @@ export default {
       },
       startVisitFromPlanned(visitData) {
         this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, visitData.clientINN);
-        const orders = this.products.map((p) => ({
-          productItem: p.item, order: 0, balance: 0, sales: 0, recommend: 0,
-        }));
         const composedVisitData = JSON.parse(JSON.stringify(visitData));
-        composedVisitData.orders = orders;
         composedVisitData.status = 1;
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
         const { clientType } = this.clientByINN(composedVisitData.clientINN);
