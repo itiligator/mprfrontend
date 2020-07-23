@@ -28,7 +28,8 @@
           v-model='currentVisit.deliveryDate'
           locale="ru"
           :min-date='new Date()'
-          :masks="masks"/>
+          :masks="masks"
+          style="z-index:99999"/>
         Добавить товары в заказ
         <vs-select
           autocomplete
@@ -43,37 +44,36 @@
         </vs-select>
         <vs-table
           v-model="highlightedProduct"
-          :data="yAOL.items">
+          :data="yAOL.items"
+          noDataText="Заказ пустой"
+          style='overflow-x:hidden;'>
           <template slot="header">
             <h3>
               Заказ
             </h3>
           </template>
           <template slot="thead">
-            <vs-th>
+            <vs-th w="4">
               Товар
             </vs-th>
             <vs-th>
-              Цена
+              Цена/<br/>Стоимость
             </vs-th>
             <vs-th>
-              Кол-во
-            </vs-th>
-            <vs-th>
-              Ст-сть
+              Количество
             </vs-th>
           </template>
 
           <template slot-scope="{data}">
             <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
-              <vs-td>
+              <vs-td w="4">
                 {{ order.product.name }}
                 <br/>
                 <vs-button @click="yAOL.removeItem(order)" color="primary" type="border">Удалить</vs-button>
               </vs-td>
 
               <vs-td>
-                {{ order.product.price }}
+                {{ order.product.price }} /<br/> {{ order.total() }}
               </vs-td>
 
               <vs-td align="center">
@@ -87,9 +87,6 @@
                 <vs-button @click="order.order=50" style="padding: 8px 4px;">50</vs-button>
               </vs-td>
 
-              <vs-td>
-                {{ order.total() }}
-              </vs-td>
             </vs-tr>
           </template>
         </vs-table>
@@ -97,19 +94,19 @@
         <br/>
         <br/>
         <div v-if="highlightedProduct !== null && previousVisits !== []">
-        <vs-row>
-          <vs-col vs-w="4">Дата</vs-col>
-          <vs-col vs-w="2">Остаток</vs-col>
-          <vs-col vs-w="2">Продажи</vs-col>
-          <vs-col vs-w="2">Рекзаказ</vs-col>
-          <vs-col vs-w="2">Заказ</vs-col>
+        <vs-row style="margin-top:2px;">
+          <vs-col style="width: 24%;"><b>Дата</b></vs-col>
+          <vs-col style="width: 20%;"><b>Остаток</b></vs-col>
+          <vs-col style="width: 20%;"><b>Продажи</b></vs-col>
+          <vs-col style="width: 20%;"><b>Рекзаказ</b></vs-col>
+          <vs-col style="width: 16%;"><b>Заказ</b></vs-col>
         </vs-row>
-        <vs-row v-for="(o, date) in previousOrders[highlightedProduct.product.item]" v-bind:key="o.id">
-          <vs-col vs-w="4">{{date}}</vs-col>
-          <vs-col vs-w="2">{{o.balance}}</vs-col>
-          <vs-col vs-w="2">{{o.sales}}</vs-col>
-          <vs-col vs-w="2">{{o.recommend}}</vs-col>
-          <vs-col vs-w="2">{{o.order}}</vs-col>
+        <vs-row v-for="(o, date) in previousOrders[highlightedProduct.product.item]" v-bind:key="o.id" style="margin-top:2px;">
+          <vs-col style="width: 24%;">{{date}}</vs-col>
+          <vs-col style="width: 20%;">{{o.balance}}</vs-col>
+          <vs-col style="width: 20%;">{{o.sales}}</vs-col>
+          <vs-col style="width: 20%;">{{o.recommend}}</vs-col>
+          <vs-col style="width: 16%;">{{o.order}}</vs-col>
         </vs-row>
         </div>
         <br/>
