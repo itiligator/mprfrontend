@@ -403,6 +403,7 @@ export default {
       this.preparePreviousOrders();
     }
     this.$store.dispatch(PRICES_DOWNLOAD_ALL_FROM_SERVER);
+    this.restoreOrders();
   },
   beforeDestroy() {
     this.saveCurrentVisitToVuex();
@@ -411,9 +412,6 @@ export default {
   methods:
     {
       saveCurrentVisitToVuex() {
-        console.log(this.yAOL.orderArray());
-        console.log(this.currentVisit);
-        this.currentVisit.orders = [];
         this.currentVisit.orders = this.yAOL.orderArray();
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.currentVisit);
       },
@@ -505,6 +503,19 @@ export default {
       },
       updatePrices() {
         this.yAG.forEach((g) => g.updatePrice(this.priceByItem(g.item)));
+      },
+      restoreOrders() {
+        this.currentVisit.orders.forEach((o) => {
+          const product = this.yAG.find((g) => g.item === o.productItem);
+          if (product !== undefined) {
+            const order = new OrderItem(product);
+            order.order = o.order;
+            order.balance = o.balance;
+            order.sales = o.sales;
+            order.recommend = o.recommend;
+            this.yAOL.items.push(order);
+          }
+        });
       },
     },
 };
