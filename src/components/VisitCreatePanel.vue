@@ -112,7 +112,7 @@ export default {
       this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
       const { clientType } = this.clientByINN(composedVisitData.clientINN);
       // eslint-disable-next-line max-len
-      const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);
+      const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => (q.clientType === 'Магазин') === (clientType === 'Магазин'));
       this.$store.dispatch(CHECKLIST_SAVE_CURRENT, currentChecklist);
     },
     startVisitFromClientList(client) {
@@ -121,7 +121,7 @@ export default {
       this.initialVisit.UUID = this.$uuid.v4();
       this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, this.initialVisit);
       // eslint-disable-next-line max-len
-      const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === client.clientType);
+      const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => (q.clientType === 'Магазин') === (client.clientType === 'Магазин'));
       this.$store.dispatch(CHECKLIST_SAVE_CURRENT, currentChecklist);
     },
   },
