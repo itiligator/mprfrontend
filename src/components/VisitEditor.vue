@@ -113,8 +113,7 @@
       <vs-tab label="Чеклист">
         <!--    чек-лист для Драфт и Хорека-->
 
-        <div v-if="clientByINN(currentVisit.clientINN).clientType === 'Хорека'
-    || clientByINN(currentVisit.clientINN).clientType === 'Драфт'"
+        <div v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'"
     style="margin-top:2mm;">
           <!-- BEGIN CHECKLIST Цены -->
           <vs-row>
@@ -136,10 +135,10 @@
               {{ question.text }}
             </vs-col>
             <vs-col vs-w="4">
-              <vs-input class="compact-form" v-model="question.answer1"/>
+              <vs-input type='number' class="compact-form" v-model="question.answer1"/>
             </vs-col>
             <vs-col vs-w="4">
-              <vs-input class="compact-form" v-model="question.answer2"/>
+              <vs-input type='number' class="compact-form" v-model="question.answer2"/>
             </vs-col>
           </vs-row>
 
@@ -163,7 +162,7 @@
               {{ question.text }}
             </vs-col>
             <vs-col vs-w="6">
-              <vs-input class="compact-form" v-model="question.answer1"/>
+              <vs-input type='number' class="compact-form" v-model="question.answer1"/>
             </vs-col>
           </vs-row>
 
