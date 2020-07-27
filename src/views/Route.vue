@@ -160,7 +160,7 @@ export default {
         this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
         const { clientType } = this.clientByINN(composedVisitData.clientINN);
         // eslint-disable-next-line max-len
-        const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => q.clientType === clientType);
+        const currentChecklist = this.$store.getters[CHECKLISTS_GET_ALL].filter((q) => (q.clientType === 'Магазин') === (client.clientType === 'Магазин'));
         this.$store.dispatch(CHECKLIST_SAVE_CURRENT, currentChecklist);
         this.$router.push('visit');
       },
