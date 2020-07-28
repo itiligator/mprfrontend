@@ -55,31 +55,31 @@
             <template v-slot:default>
                 <thead>
                     <tr>
-                        <th>Сорт пива</th>
-                        <th>Цена</th>
-                        <th>Остаток</th>
+                        <th width="60%">Сорт пива</th>
+                        <th width="20%">Цена</th>
+                        <th width="20%">Остаток</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Цена за 0,5 СС</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Цена за 0,5 СТ</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Цена за 0,5 СП</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Цена за 0,5 ХБ</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                 </tbody>
             </template>
@@ -89,33 +89,33 @@
                 <thead>
                     <tr>
                         <th>Вопрос</th>
-                        <th>Ответ</th>
+                        <th width="20%">Ответ</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Количество кег 10л</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Количество кег 20л</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Количество кег 30л</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Вопрос 1</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Вопрос 2</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                     <tr>
                         <td>Вопрос Х</td>
-                        <td><v-text-field solo hide-details="auto"></v-text-field></td>
+                        <td><v-text-field solo hide-details="auto" dense></v-text-field></td>
                     </tr>
                 </tbody>
             </template>
