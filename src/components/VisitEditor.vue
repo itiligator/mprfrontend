@@ -23,12 +23,18 @@
         </vs-switch>
       </vs-tab>
       <vs-tab label="Заказ" v-if="clientByINN(currentVisit.clientINN).clientType !== 'Магазин'">
+          <vs-row>
+            <vs-col vs-w='3'>
           Дата доставки
+            </vs-col>
+            <vs-col vs-w='9'>
           <vc-date-picker
             v-model='currentVisit.deliveryDate'
             locale="ru"
             :min-date='new Date()'
             :masks="masks"/>
+          </vs-col>
+        </vs-row>
         Добавить товары в заказ
         <vs-select
           autocomplete

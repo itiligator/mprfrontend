@@ -5,7 +5,7 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-w="9">
-      <h2>Визит: {{visitingClientName}}</h2>
+      <h3 style="margin:0px;">Визит {{ currentVisit.id }}: {{visitingClientName}}</h3>
     </vs-col>
   </vs-row>
   <vs-row vs-type="flex" vs-justify="center" vs-align="center">
@@ -50,10 +50,12 @@ export default {
     isCurrentVisit() {
       return this.$store.getters[VISIT_IS_CURRENT];
     },
+    currentVisit() {
+      return this.$store.getters[VISIT_GET_CURRENT];
+    },
     visitingClientName() {
       if (this.isCurrentVisit) {
-        const cV = this.$store.getters[VISIT_GET_CURRENT];
-        return this.clientByINN(cV.clientINN);
+        return this.clientByINN(this.currentVisit.clientINN);
       }
       return '';
     },

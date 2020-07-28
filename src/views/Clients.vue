@@ -6,7 +6,7 @@
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
     <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-w="9">
-      <h2>Клиенты</h2>
+      <h3 style="margin:0px;">Клиенты</h3>
     </vs-col>
   </vs-row>
 
