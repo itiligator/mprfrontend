@@ -24,7 +24,10 @@ import { TOGGLE_SIDEBAR } from '@/store/actions/UI';
 import VisitEditor from '@/components/VisitEditor.vue';
 import VisitCreatePanel from '@/components/VisitCreatePanel.vue';
 import { VISIT_IS_CURRENT, VISIT_GET_CURRENT } from '@/store/actions/visits';
-import { GETCLIENTBYINN } from '@/store/actions/clients';
+import { GETCLIENTBYINN, CLIENTS_REQUEST } from '@/store/actions/clients';
+import { PRICES_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/prices';
+import { GOODS_REQUEST } from '@/store/actions/goods';
+import { CHECKLISTS_REQUEST } from '@/store/actions/checklists';
 
 export default {
   name: 'Visit',
@@ -34,6 +37,14 @@ export default {
   components: {
     VisitEditor,
     VisitCreatePanel,
+  },
+  mounted() {
+    if (this.$store.getters.isAuthenticated) {
+      this.$store.dispatch(CLIENTS_REQUEST);
+      this.$store.dispatch(GOODS_REQUEST);
+      this.$store.dispatch(CHECKLISTS_REQUEST);
+      this.$store.dispatch(PRICES_DOWNLOAD_ALL_FROM_SERVER);
+    }
   },
   computed: {
     isCurrentVisit() {

@@ -103,8 +103,9 @@ import {
   VISIT_IS_CURRENT, VISIT_SAVE_CURRENT_TO_VUEX,
 } from '@/store/actions/visits';
 import { CLIENTS_REQUEST, GETALLCLIENTS, GETCLIENTBYINN } from '@/store/actions/clients';
-import { ALL_GOODS } from '@/store/actions/goods';
-import { CHECKLIST_SAVE_CURRENT, CHECKLISTS_GET_ALL } from '@/store/actions/checklists';
+import { ALL_GOODS, GOODS_REQUEST } from '@/store/actions/goods';
+import { CHECKLIST_SAVE_CURRENT, CHECKLISTS_GET_ALL, CHECKLISTS_REQUEST } from '@/store/actions/checklists';
+import { PRICES_DOWNLOAD_ALL_FROM_SERVER } from '@/store/actions/prices';
 
 export default {
   name: 'Route',
@@ -117,6 +118,14 @@ export default {
     return {
       todayOnly: false,
     };
+  },
+  mounted() {
+    if (this.$store.getters.isAuthenticated) {
+      this.$store.dispatch(CLIENTS_REQUEST);
+      this.$store.dispatch(GOODS_REQUEST);
+      this.$store.dispatch(CHECKLISTS_REQUEST);
+      this.$store.dispatch(PRICES_DOWNLOAD_ALL_FROM_SERVER);
+    }
   },
   computed: {
     // visits() {
