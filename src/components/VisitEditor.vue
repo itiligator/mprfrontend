@@ -34,11 +34,8 @@
             :min-date='new Date()'
             :masks="masks"
             style="left: -20px;"
-              :input-props='{
-              placeholder: "Дата доставки",
-              label: "Дата доставки",
-              readonly: true
-            }'/>
+            :input-props='inputProps'
+            />
           </vs-col>
         </vs-row>
         <br/>
@@ -46,9 +43,10 @@
         <vs-table
           v-model="highlightedProduct"
           :data="yAOL.items"
-          noDataText="">
+          noDataText=""
+          style="width: 99% !important;">
           <template slot="thead">
-            <vs-th w="4">
+            <vs-th>
               Товар
             </vs-th>
             <vs-th>
@@ -61,10 +59,10 @@
 
           <template slot-scope="{data}">
             <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
-              <vs-td w="4" style="line-clamp: 2;">
-                {{ order.product.shortName() }}
-                <br/>
-                <vs-button @click="yAOL.removeItem(order)" color="primary" type="border">Удалить</vs-button>
+              <vs-td style="max-width:40%;">
+                <div class="box">
+                  <p>{{ order.product.name }}</p>
+                </div>
               </vs-td>
 
               <vs-td>
@@ -72,17 +70,28 @@
               </vs-td>
 
               <vs-td align="center">
-                <vs-input-number
-                  min="0"
-                  v-model="order.order"
-                ></vs-input-number>
-                <vs-button @click="order.order=10" style="padding: 8px 4px;">10</vs-button> &ensp;
-                <vs-button @click="order.order=20" style="padding: 8px 4px;">20</vs-button> &ensp;
-                <vs-button @click="order.order=30" style="padding: 8px 4px;">30</vs-button> &ensp;
-                <vs-button @click="order.order=50" style="padding: 8px 4px;">50</vs-button>
+                <vs-row>
+                  <vs-col vs-w="9">
+                    <vs-input
+                      type="number"
+                      v-model="order.order"
+                      style="width:70px;"
+                  ></vs-input>
+                  </vs-col>
+                  <vs-col vs-w="2">
+                    <vs-button @click="yAOL.removeItem(order)" color="primary" type="border" style="padding:6px;"><i class="material-icons" style="font-size:12px; z-index:0;"> clear </i></vs-button>
+                  </vs-col>
+                </vs-row>
+<!--                 <template slot="edit" style="padding:0px !important;">
+                  <vs-button @click="order.order=10" style="padding: 12px; margin:2mm;">10</vs-button>
+                  <vs-button @click="order.order=20" style="padding: 12px; margin:2mm;">20</vs-button>
+                  <vs-button @click="order.order=30" style="padding: 12px; margin:2mm;">30</vs-button>
+                  <vs-button @click="order.order=50" style="padding: 12px; margin:2mm;">50</vs-button>
+                </template> -->
               </vs-td>
-
             </vs-tr>
+
+
             <vs-tr>
               <vs-td colspan="3">
                 <vs-select
@@ -100,16 +109,16 @@
               </vs-td>
             </vs-tr>
             <vs-tr>
-              <vs-td>
+              <vs-td colspan="3" style="font-size:1rem;">
                 <strong>ИТОГО</strong>
-              </vs-td>
-              <vs-td>
+
                 {{ yAOL.total() }} руб.
-              </vs-td>
-              <vs-td>
+
                 {{ yAOL.sum() }} литров
               </vs-td>
             </vs-tr>
+            <template slot="expand">
+            </template>
           </template>
         </vs-table>
         <br/>
@@ -307,7 +316,7 @@ class Product {
   }
 
   shortName() {
-    return this.name.substring(0, 18).concat('...');
+    return this.name.substring(0, 35).concat('...');
   }
 }
 
@@ -342,11 +351,11 @@ class OrderList {
   }
 
   total() {
-    return this.items.map((i) => i.total()).reduce((a, b) => a + b, 0);
+    return Math.round(this.items.map((i) => i.total()).reduce((a, b) => a + b, 0) * 100) / 100;
   }
 
   sum() {
-    return this.items.map((i) => i.order).reduce((a, b) => a + b, 0);
+    return this.items.map((i) => Number(i.order)).reduce((a, b) => a + b, 0);
   }
 
   has(item) {
@@ -356,7 +365,7 @@ class OrderList {
   orderArray() {
     return this.items.map((i) => ({
       productItem: i.product.item,
-      order: i.order,
+      order: Number(i.order),
       delivered: i.delivered,
       recommend: i.recommend,
       sales: i.sales,
@@ -382,6 +391,9 @@ export default {
     },
     goodsList() {
       return this.yAG.filter((g) => !this.yAOL.has(g));
+    },
+    inputProps() {
+      return { placeholder: this.currentVisit.deliveryDate, readonly: true };
     },
   },
   components: {
@@ -560,4 +572,23 @@ export default {
   .fixed-row-bottom { position: fixed; bottom: 0; z-index: 999;}
   .button.vs-tabs--btn {font-size: 20px}
   .compact-form { max-width: 90%;}
+  .vs-tabs--content { padding: 5px !important; }
+  .vs-con-table { padding: 0px !important; }
+  .vs-table--tbody-table .tr-values td { padding: 2px !important;  font-size: 0.9rem;}
+  .th { padding-bottom: 0px !important; }
+  .vs-con-table table { width: 99% !important; }
+  .vs-table--content { width: 99% !important; }
+  .box {
+/*  background-color: #fff;
+  box-shadow: 2px 2px 10px #246756;
+  padding: 2em;*/
+  width: 150px;
+}
+
+.box p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 </style>

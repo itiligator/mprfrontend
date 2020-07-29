@@ -1,6 +1,6 @@
 <template>
 <div>
-  <vs-row vs-w="12"  vs-type="flex" vs-justify="flex-start">
+  <vs-row vs-w="12"  vs-type="flex" vs-justify="flex-start" style="height:30px;">
     <vs-col vs-type="flex" vs-justify="flex-start" vs-align="center" vs-xs="2" vs-lg="2">
       <vs-button @click="toggleSidebar" icon="view_headline"></vs-button>
     </vs-col>
