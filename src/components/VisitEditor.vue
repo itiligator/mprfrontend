@@ -32,31 +32,21 @@
             v-model='currentVisit.deliveryDate'
             locale="ru"
             :min-date='new Date()'
-            :masks="masks"/>
+            :masks="masks"
+            style="left: -20px;"
+              :input-props='{
+              placeholder: "Дата доставки",
+              label: "Дата доставки",
+              readonly: true
+            }'/>
           </vs-col>
         </vs-row>
-        Добавить товары в заказ
-        <vs-select
-          autocomplete
-          v-model="selectedProduct"
-          width="100%"
-          >
-          <vs-select-item
-            :key="index"
-            :value="item"
-            :text="item.name"
-            v-for="(item, index) in yAG"/>
-        </vs-select>
+        <br/>
+
         <vs-table
           v-model="highlightedProduct"
           :data="yAOL.items"
-          noDataText="Заказ пустой"
-          style='overflow-x:hidden;'>
-          <template slot="header">
-            <h3>
-              Заказ
-            </h3>
-          </template>
+          noDataText="">
           <template slot="thead">
             <vs-th w="4">
               Товар
@@ -71,8 +61,8 @@
 
           <template slot-scope="{data}">
             <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
-              <vs-td w="4">
-                {{ order.product.name }}
+              <vs-td w="4" style="line-clamp: 2;">
+                {{ order.product.shortName() }}
                 <br/>
                 <vs-button @click="yAOL.removeItem(order)" color="primary" type="border">Удалить</vs-button>
               </vs-td>
@@ -93,9 +83,35 @@
               </vs-td>
 
             </vs-tr>
+            <vs-tr>
+              <vs-td colspan="3">
+                <vs-select
+                  autocomplete
+                  v-model="selectedProduct"
+                  width="100%"
+                  placeholder="Добавить товар"
+                  >
+                  <vs-select-item
+                    :key="index"
+                    :value="item"
+                    :text="item.name"
+                    v-for="(item, index) in goodsList"/>
+                </vs-select>
+              </vs-td>
+            </vs-tr>
+            <vs-tr>
+              <vs-td>
+                <strong>ИТОГО</strong>
+              </vs-td>
+              <vs-td>
+                {{ yAOL.total() }} руб.
+              </vs-td>
+              <vs-td>
+                {{ yAOL.sum() }} литров
+              </vs-td>
+            </vs-tr>
           </template>
         </vs-table>
-        ИТОГО {{ yAOL.total() }}
         <br/>
         <br/>
         <div v-if="highlightedProduct !== null && previousVisits !== []">
@@ -289,6 +305,10 @@ class Product {
   updatePrice(price) {
     this.price = price;
   }
+
+  shortName() {
+    return this.name.substring(0, 18).concat('...');
+  }
 }
 
 class OrderItem {
@@ -325,6 +345,14 @@ class OrderList {
     return this.items.map((i) => i.total()).reduce((a, b) => a + b, 0);
   }
 
+  sum() {
+    return this.items.map((i) => i.order).reduce((a, b) => a + b, 0);
+  }
+
+  has(item) {
+    return this.items.some((o) => o.product === item);
+  }
+
   orderArray() {
     return this.items.map((i) => ({
       productItem: i.product.item,
@@ -351,6 +379,9 @@ export default {
     },
     client() {
       return this.clientByINN(this.currentVisit.clientINN);
+    },
+    goodsList() {
+      return this.yAG.filter((g) => !this.yAOL.has(g));
     },
   },
   components: {
@@ -395,7 +426,10 @@ export default {
       this.preparePreviousOrders();
     },
     selectedProduct() {
-      this.yAOL.newItem(this.selectedProduct);
+      if (this.selectedProduct !== null) {
+        this.yAOL.newItem(this.selectedProduct);
+      }
+      this.$nextTick(() => { this.selectedProduct = null; });
     },
   },
   mounted() {
