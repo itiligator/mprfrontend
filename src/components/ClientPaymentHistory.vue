@@ -3,9 +3,9 @@
   <vs-list>
     <vs-list-header title="Предыдущие оплаты"></vs-list-header>
     <vs-list-item
-      v-for="visit in visits"
+      v-for="visit in filteredVisitsPayment"
       :key="visit.UUID"
-      :title="visit.payment+ ' руб. ' + visit.date">
+      :title="visit.payment + ' руб. ' + visit.date">
     </vs-list-item>
   </vs-list>
 </div>
@@ -20,6 +20,15 @@ export default {
   computed: {
     visits() {
       return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.clientinn);
+    },
+    filteredVisitsPayment() {
+      return this.visits.map((v) => {
+        let p = 'Оплата отсутствует';
+        if (v.payment !== undefined) {
+          p = v.payment;
+        }
+        return { UUID: v.UUID, date: v.date, payment: p };
+      });
     },
   },
   mounted() {

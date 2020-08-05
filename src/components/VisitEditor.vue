@@ -43,8 +43,7 @@
         <vs-table
           v-model="highlightedProduct"
           :data="yAOL.items"
-          noDataText=""
-          style="width: 99% !important;">
+          noDataText="">
           <template slot="thead">
             <vs-th>
               Товар
@@ -59,7 +58,7 @@
 
           <template slot-scope="{data}">
             <vs-tr :data="order" :key="indextr" v-for="(order, indextr) in data" >
-              <vs-td style="max-width:40%;">
+              <vs-td style="max-width:60%;">
                 <div class="box">
                   <p>{{ order.product.name }}</p>
                 </div>
@@ -75,7 +74,7 @@
                     <vs-input
                       type="number"
                       v-model="order.order"
-                      style="width:70px;"
+                      style="width:85%;"
                   ></vs-input>
                   </vs-col>
                   <vs-col vs-w="2">
@@ -122,8 +121,8 @@
           </template>
         </vs-table>
         <br/>
-        <br/>
         <div v-if="highlightedProduct !== null && previousVisits !== []">
+          Предыдущие заказы выбранного товара
         <vs-row style="margin-top:2px;">
           <vs-col style="width: 24%;"><b>Дата</b></vs-col>
           <vs-col style="width: 20%;"><b>Остаток</b></vs-col>
@@ -137,6 +136,25 @@
           <vs-col style="width: 20%;">{{o.sales}}</vs-col>
           <vs-col style="width: 20%;">{{o.recommend}}</vs-col>
           <vs-col style="width: 16%;">{{o.order}}</vs-col>
+        </vs-row>
+        <vs-row>
+          <vs-col vs-w="4">
+            Остаток
+          </vs-col>
+          <vs-col vs-w="8">
+            <vs-input
+              type="number"
+              v-model="highlightedProduct.balance"
+              @change="updateRecomSales(highlightedProduct)"></vs-input>
+          </vs-col>
+        </vs-row>
+        <vs-row>
+          <vs-col vs-w="4">
+            <strong>Рек. заказ</strong>
+          </vs-col>
+          <vs-col vs-w="8">
+            <strong>{{ highlightedProduct.recommend }}</strong>
+          </vs-col>
         </vs-row>
         </div>
         <br/>
@@ -261,7 +279,7 @@
       <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="4" vs-lg="4">
       </vs-col>
       <vs-col vs-type="flex" vs-justify="flex-end" vs-align="center" vs-xs="4" vs-lg="4">
-        <vs-button @click="finishVisit">Закончить визит</vs-button>
+        <vs-button @click="finishVisit" :disabled="!canBeFinished">Закончить визит</vs-button>
       </vs-col>
     </vs-row>
 
@@ -332,6 +350,14 @@ class OrderItem {
   total() {
     return Math.round((this.order * this.product.price * 100)) / 100;
   }
+
+  setSales(s) {
+    this.sales = s;
+  }
+
+  setRecommend(r) {
+    this.recommend = r;
+  }
 }
 
 class OrderList {
@@ -369,7 +395,7 @@ class OrderList {
       delivered: i.delivered,
       recommend: i.recommend,
       sales: i.sales,
-      balance: i.balance,
+      balance: Number(i.balance),
     }));
   }
 }
@@ -377,6 +403,9 @@ class OrderList {
 export default {
   name: 'VisitEditor',
   computed: {
+    canBeFinished() {
+      return (this.client.clientType === 'Магазин' || this.currentVisit.deliveryDate !== '');
+    },
     products() {
       return this.$store.getters[ALL_GOODS];
     },
@@ -498,13 +527,13 @@ export default {
       stringLineFromOrder(order) {
         return `Заказ: ${order.order} Доставлено: ${order.delivered} Остаток: ${order.balance} Продажи: ${order.sales}`;
       },
-      updateRecomSales(orderIndex) {
-        const { productItem } = this.currentVisit.orders[orderIndex];
+      updateRecomSales(orderItem) {
+        const productItem = orderItem.product.item;
         const prevBalance = this.previousOrders[productItem][this.veryLastVisitDate].balance;
         const prevDelivery = this.previousOrders[productItem][this.veryLastVisitDate].delivered;
         // eslint-disable-next-line max-len
-        this.currentVisit.orders[orderIndex].sales = prevBalance + prevDelivery - this.currentVisit.orders[orderIndex].balance;
-        this.currentVisit.orders[orderIndex].recommend = this.currentVisit.orders[orderIndex].sales;
+        orderItem.setSales(prevBalance + prevDelivery - Number(orderItem.balance));
+        orderItem.setRecommend(orderItem.sales - Number(orderItem.balance));
       },
       preparePreviousOrders() {
         this.previousOrders = {};
@@ -574,15 +603,13 @@ export default {
   .compact-form { max-width: 90%;}
   .vs-tabs--content { padding: 5px !important; }
   .vs-con-table { padding: 0px !important; }
-  .vs-table--tbody-table .tr-values td { padding: 2px !important;  font-size: 0.9rem;}
+  .vs-table--tbody-table .tr-values td {padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 5px;  font-size: 0.9rem;}
   .th { padding-bottom: 0px !important; }
-  .vs-con-table table { width: 99% !important; }
-  .vs-table--content { width: 99% !important; }
   .box {
 /*  background-color: #fff;
   box-shadow: 2px 2px 10px #246756;
   padding: 2em;*/
-  width: 150px;
+  /*width: 40%;*/
 }
 
 .box p {

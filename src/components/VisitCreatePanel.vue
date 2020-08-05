@@ -83,6 +83,7 @@ export default {
         processed: null,
         invoice: null,
         status: 1,
+        deliveryDate: '',
       },
       selectedClient: {},
     };
@@ -109,6 +110,7 @@ export default {
       this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, visitData.clientINN);
       const composedVisitData = JSON.parse(JSON.stringify(visitData));
       composedVisitData.status = 1;
+      composedVisitData.deliveryDate = composedVisitData.deliveryDate || '';
       this.$store.dispatch(VISIT_SAVE_CURRENT_TO_VUEX, composedVisitData);
       const { clientType } = this.clientByINN(composedVisitData.clientINN);
       // eslint-disable-next-line max-len
