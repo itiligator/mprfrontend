@@ -158,6 +158,17 @@
         </vs-row>
         </div>
         <br/>
+<!--         <vs-row>
+          <vs-col vs-w="2">
+            <label for='sw'>БД:</label>
+          </vs-col>
+          <vs-col vs-w="10">
+          <vs-switch id='sw' v-model="currentVisit.dataBase" @change="updatePrices">
+          <span slot="on" style="font-size:16px">ПБК</span>
+          <span slot="off" style="font-size:16px">Тест</span>
+        </vs-switch>
+          </vs-col>
+        </vs-row> -->
       </vs-tab>
       <vs-tab label="Чеклист">
         <!--    чек-лист для Драфт и Хорека-->
@@ -432,23 +443,13 @@ export default {
     return {
       yAG: [],
       yAOL: new OrderList(),
-      editPopup: false,
       selectedProduct: null,
       highlightedProduct: null,
       currentVisit: {},
       checklist: [],
-      timer: '',
       previousOrders: {},
       veryLastVisitDate: '',
       orderedProducts: [],
-      editedOrder: {
-        productItem: -1,
-        order: 0,
-        delivered: 0,
-        balance: 0,
-        sales: 0,
-        recommend: 0,
-      },
       authHeader: { Authorization: 'Token' },
       masks: {
         input: mask,
@@ -460,7 +461,6 @@ export default {
   created() {
     this.currentVisit = JSON.parse(JSON.stringify(this.$store.getters[VISIT_GET_CURRENT]));
     this.checklist = JSON.parse(JSON.stringify(this.$store.getters[CHECKLIST_GET_CURRENT]));
-    // this.$store.dispatch(VISIT_DOWNLOAD_HISTORY_BY_INN_FROM_SERVER, this.currentVisit.clientINN);
   },
   watch: {
     previousVisits() {
@@ -524,9 +524,6 @@ export default {
         }
         return undefined;
       },
-      stringLineFromOrder(order) {
-        return `Заказ: ${order.order} Доставлено: ${order.delivered} Остаток: ${order.balance} Продажи: ${order.sales}`;
-      },
       updateRecomSales(orderItem) {
         const productItem = orderItem.product.item;
         const prevBalance = this.previousOrders[productItem][this.veryLastVisitDate].balance;
@@ -540,7 +537,6 @@ export default {
         this.previousVisits.forEach((visit) => {
           visit.orders.forEach((order) => {
             this.previousOrders[order.productItem] = this.previousOrders[order.productItem] || {};
-            /* this.previousOrders[order.productItem].push(order); */
             this.previousOrders[order.productItem][visit.date] = order;
             this.veryLastVisitDate = visit.date;
           });
@@ -566,13 +562,6 @@ export default {
           }
         }
         this.selectedProduct = null;
-      },
-      removeProductFromOrders(idx) {
-        this.orderedProducts.slice(idx, 1);
-      },
-      openPopup(idx) {
-        this.editPopup = true;
-        this.editedOrder = this.orderedProducts(idx);
       },
       prepareProducts() {
         this.yAG = this.products.map((p) => new Product(p, this.priceByItem(p.item)));
@@ -603,19 +592,13 @@ export default {
   .compact-form { max-width: 90%;}
   .vs-tabs--content { padding: 5px !important; }
   .vs-con-table { padding: 0px !important; }
-  .vs-table--tbody-table .tr-values td {padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 5px;  font-size: 0.9rem;}
+  .vs-table--tbody-table .tr-values td {padding-top: 2px; padding-bottom: 2px; padding-left: 0px; padding-right: 5px;  font-size: 0.9rem;}
   .th { padding-bottom: 0px !important; }
-  .box {
-/*  background-color: #fff;
-  box-shadow: 2px 2px 10px #246756;
-  padding: 2em;*/
-  /*width: 40%;*/
-}
 
-.box p {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  .box p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 </style>

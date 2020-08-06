@@ -22,13 +22,17 @@ export default {
       return this.$store.getters[VISIT_GET_HISTORY_BY_INN](this.clientinn);
     },
     filteredVisitsPayment() {
-      return this.visits.map((v) => {
-        let p = 'Оплата отсутствует';
-        if (v.payment !== undefined) {
-          p = v.payment;
-        }
-        return { UUID: v.UUID, date: v.date, payment: p };
-      });
+      let pay = [];
+      if (this.visits !== undefined) {
+        pay = this.visits.map((v) => {
+          let p = 'Оплата отсутствует';
+          if (v.payment !== undefined) {
+            p = v.payment;
+          }
+          return { UUID: v.UUID, date: v.date, payment: p };
+        });
+      }
+      return pay;
     },
   },
   mounted() {
